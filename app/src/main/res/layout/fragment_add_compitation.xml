@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            tools:context=".views.AddCompitationFragment">
+
+            <RelativeLayout
+                android:id="@+id/select_compitation_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/compitation_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorGrayDark" />
+                <ImageView
+                    android:id="@+id/select_compitation_photo"
+                    android:layout_marginRight="8dp"
+                    android:src="@drawable/ic_img"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/compitation_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/add_compitation_title"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/add_compitation_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/login_bg"
+                android:fontFamily="@font/bukra"
+                android:padding="16dp"
+                android:text="@string/add_compitation"
+                android:backgroundTint="@color/colorAccent"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>

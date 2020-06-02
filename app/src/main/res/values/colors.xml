@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#434343</color>
+    <color name="colorPrimaryDark">#434343</color>
+    <color name="colorAccent">#40B5C9</color>
+    <color name="colorNav">#646464</color>
+    <color name="colorBackground">#EEEEED</color>
+    <color name="colorText">#626262</color>
+    <color name="colorDivider">#F3F4F9</color>
+    <color name="colorGray">#F3F3F3</color>
+    <color name="colorPrimaryPurple">#F00</color>
+    <color name="colorPrimaryDarkPurple">#F00</color>
+    <color name="colorAccentPurple">#F00</color>
+    <color name="colorGrayDark">#9090A8</color>
+    <color name="colorFavorite">#DE0906</color>
+    <color name="colorFacebook">#3B5999</color>
+    <color name="colorGoogle">#F5A721</color>
+    <color name="colorAlpha">#434343</color>
+    <color name="colorYellow">#FFFA00</color>
+    <color name="unSelectedFavorite">#A9A9A9</color>
+</resources>

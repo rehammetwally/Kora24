@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp"
+        tools:context=".views.SettingsFragment">
+
+        <Switch
+            android:id="@+id/night_mode_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/bukra"
+            android:switchMinWidth="56dp"
+            android:text="@string/night_mode"
+            android:textOff="OFF"
+            android:textOn="ON"
+            android:textColor="?android:textColor"/>
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
+
+        <Switch
+            android:id="@+id/matches_reminder_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/bukra"
+            android:switchMinWidth="56dp"
+            android:text="@string/matches_reminder"
+            android:textColor="?android:textColor"
+            android:textOff="OFF"
+            android:textOn="ON" />
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
+
+        <Switch
+            android:id="@+id/activate_notification_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/bukra"
+            android:switchMinWidth="56dp"
+            android:text="@string/activate_notification"
+            android:textColor="?android:textColor"
+            android:textOff="OFF"
+            android:textOn="ON" />
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
+        <Switch
+            android:id="@+id/mute_notification_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/bukra"
+            android:switchMinWidth="56dp"
+            android:text="@string/mute_notification"
+            android:textColor="?android:textColor"
+            android:textOff="OFF"
+            android:textOn="ON" />
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
+
+        <Switch
+            android:id="@+id/mute_news_notification_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/bukra"
+            android:switchMinWidth="56dp"
+            android:text="@string/mute_news_notification"
+            android:textColor="?android:textColor"
+            android:textOff="OFF"
+            android:textOn="ON" />
+
+        <View
+
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider" />
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/notification_sound_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:textColor="?android:textColor"
+                android:layout_weight="1"
+                android:fontFamily="@font/bukra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notification_sound"
+                />
+
+            <ImageView
+                android:tint="?android:textColor"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_arrow_left"
+                android:contentDescription="@null"
+                android:layout_weight="0"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

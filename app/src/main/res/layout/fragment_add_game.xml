@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp"
+            tools:context=".views.AddGameFragment">
+
+
+            <EditText
+                android:id="@+id/tv_channel_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/add_game_tv_channel"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/commentor_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/add_game_commentor"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/stage_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/add_game_stage"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/stadium_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/add_game_stadium"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/select_game_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:drawableLeft="@drawable/calendar"
+                android:fontFamily="@font/bukra"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:text="@string/add_game_date"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/game_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/bukra"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/select_game_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white"
+                android:drawableLeft="@drawable/time"
+                android:fontFamily="@font/bukra"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:text="@string/add_game_time"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/game_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/bukra"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/season_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/compitation_team_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/home_team_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/away_team_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@android:color/white" />
+
+
+            <Button
+                android:id="@+id/add_game_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/login_bg"
+                android:backgroundTint="@color/colorAccent"
+                android:fontFamily="@font/bukra"
+                android:padding="16dp"
+                android:text="@string/add_game"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
+</layout>

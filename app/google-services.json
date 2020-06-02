@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "68880551146",
+    "firebase_url": "https://kora-128ae.firebaseio.com",
+    "project_id": "kora-128ae",
+    "storage_bucket": "kora-128ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68880551146:android:3c1d03c9f5f5d46a209b93",
+        "android_client_info": {
+          "package_name": "com.rehammetwally.kora24"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68880551146-sit04k016lf93hnj0dp16i545o574inm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rehammetwally.kora24",
+            "certificate_hash": "6d34d0c55b868bfd5aaccbc419e9437f672714b3"
+          }
+        },
+        {
+          "client_id": "68880551146-bqqghdvcf4s25rnb6arrh931miavbtth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB0LO2lloBh6kcU_OLoANb6-8Kl69ZLuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68880551146-bqqghdvcf4s25rnb6arrh931miavbtth.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

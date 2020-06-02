@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.rehammetwally.kora24.models.User" />
+    </data>
+
+    <ScrollView
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#A8A8A8"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            tools:context=".views.LoginFragment">
+
+            <RelativeLayout
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/user_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_launcher" />
+
+                <RelativeLayout
+                    android:id="@+id/register_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/register_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:alpha="0.94"
+                        android:src="@drawable/ic_launcher"
+                        app:civ_border_color="#EDEDED"
+                        app:civ_border_width="16dp"
+                        app:civ_circle_background_color="#EDEDED" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:background="@drawable/half"
+                        android:fontFamily="@font/bukra"
+                        android:gravity="center"
+                        android:text="@string/add_user_image"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/user_name_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/user_name"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp"
+                android:visibility="invisible" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray" />
+
+            <EditText
+                android:id="@+id/email_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/email"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorGray" />
+
+            <EditText
+                android:id="@+id/password_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@android:color/white"
+                android:fontFamily="@font/bukra"
+                android:gravity="right"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:padding="16dp"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/login_bg"
+                android:fontFamily="@font/bukra"
+                android:padding="16dp"
+                android:text="@string/login"
+                android:textColor="@android:color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/dont_has_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/bukra"
+                android:gravity="center"
+                android:text="@string/dont_has_account"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+
+            <FrameLayout
+                android:id="@+id/facebook_login_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="16dp">
+
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/facebook_login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/fb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorFacebook"
+                    android:drawableEnd="@drawable/facebook"
+                    android:fontFamily="@font/bukra"
+                    android:text="@string/facebook_login"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp" />
+            </FrameLayout>
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/google_login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<layout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools">-->
+
+<!--    <data>-->
+
+<!--        <variable-->
+<!--            name="user"-->
+<!--            type="com.rehammetwally.kora24.models.User" />-->
+<!--    </data>-->
+
+<!--    <ScrollView-->
+<!--        android:id="@+id/content_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:fillViewport="true">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:background="#A8A8A8"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            android:padding="32dp"-->
+<!--            tools:context=".views.LoginFragment">-->
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="170dp"-->
+<!--                android:layout_height="170dp"-->
+<!--                android:layout_marginBottom="16dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/user_image"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:src="@drawable/ic_launcher" />-->
+
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/register_layout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:visibility="gone">-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/register_image"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_centerInParent="true"-->
+<!--                        android:alpha="0.94"-->
+<!--                        android:src="@drawable/ic_launcher" />-->
+
+<!--&lt;!&ndash;                    app:civ_border_color="#EDEDED"&ndash;&gt;-->
+<!--&lt;!&ndash;                    app:civ_border_width="16dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                    app:civ_circle_background_color="#EDEDED"&ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/selectImage"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="85dp"-->
+<!--                        android:layout_alignParentBottom="true"-->
+<!--                        android:layout_centerHorizontal="true"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:background="@drawable/half"-->
+<!--                        android:fontFamily="@font/bukra"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="@string/add_user_image"-->
+<!--                        android:textColor="@android:color/white"-->
+<!--                        android:textSize="20sp" />-->
+<!--                </RelativeLayout>-->
+<!--            </RelativeLayout>-->
+
+
+<!--            <EditText-->
+<!--                android:id="@+id/user_name_edittext"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="right"-->
+<!--                android:background="@android:color/white"-->
+<!--                android:fontFamily="@font/bukra"-->
+<!--                android:gravity="right"-->
+<!--                android:hint="@string/user_name"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="textEmailAddress"-->
+<!--                android:padding="16dp"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                android:textColorHint="@color/colorPrimary"-->
+<!--                android:textSize="13sp"-->
+<!--                android:visibility="invisible" />-->
+
+<!--            <View-->
+<!--                android:id="@+id/view2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:background="@color/colorGray" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/email_edittext"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="right"-->
+<!--                android:background="@android:color/white"-->
+<!--                android:fontFamily="@font/bukra"-->
+<!--                android:gravity="right"-->
+<!--                android:hint="@string/email"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="textEmailAddress"-->
+<!--                android:padding="16dp"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                android:textColorHint="@color/colorPrimary"-->
+<!--                android:textSize="13sp" />-->
+
+<!--            <View-->
+<!--                android:id="@+id/view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="2dp"-->
+<!--                android:background="@color/colorGray" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/password_edittext"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="right"-->
+<!--                android:background="@android:color/white"-->
+<!--                android:fontFamily="@font/bukra"-->
+<!--                android:gravity="right"-->
+<!--                android:hint="@string/password"-->
+<!--                android:inputType="textPassword"-->
+<!--                android:padding="16dp"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                android:textColorHint="@color/colorPrimary"-->
+<!--                android:textSize="13sp" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/login_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:background="@drawable/login_bg"-->
+<!--                android:fontFamily="@font/bukra"-->
+<!--                android:padding="16dp"-->
+<!--                android:text="@string/login"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="13sp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/dont_has_account"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:fontFamily="@font/bukra"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/dont_has_account"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textSize="13sp" />-->
+
+<!--            <FrameLayout-->
+<!--                android:id="@+id/facebook_login_frame_layout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_marginBottom="16dp">-->
+
+<!--                <com.facebook.login.widget.LoginButton-->
+<!--                    android:id="@+id/facebook_login_button"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:visibility="gone" />-->
+
+
+<!--                <Button-->
+<!--                    android:id="@+id/fb"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/colorFacebook"-->
+<!--                    android:drawableEnd="@drawable/facebook"-->
+<!--                    android:fontFamily="@font/bukra"-->
+<!--                    android:text="@string/facebook_login"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="13sp" />-->
+<!--            </FrameLayout>-->
+
+<!--            <com.google.android.gms.common.SignInButton-->
+<!--                android:id="@+id/google_login_button"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textSize="13sp" />-->
+
+
+<!--        </LinearLayout>-->
+<!--    </ScrollView>-->
+<!--</layout>-->

@@ -1,0 +1,73 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="background">@android:color/white</item>
+    </style>
+
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="NightModeAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="background">@color/colorPrimary</item>
+    </style>
+
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="background">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="android:fontFamily">@font/bukra</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="RightJustifyTextView" parent="@android:style/Widget.TextView">
+        <item name="android:gravity">right|center_vertical</item>
+        <item name="android:titleTextStyle">@style/titleStyle</item>
+    </style>
+
+<!--    <style name="RightJustifyDialogWindowTitle" parent="RightJustifyDialogWindowTitle" >-->
+<!--        <item name="android:gravity">right|center_vertical</item>-->
+<!--    </style>-->
+    <style name="RightJustifyTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:textViewStyle">@style/RightJustifyTextView</item>
+        <item name="android:fontFamily">@font/bukra</item>
+        <item name="android:padding">2dp</item>
+<!--        <item name="android:windowTitleStyle"></item>-->
+<!--        <item name="android:windowTitleStyle">@style/RightJustifyDialogWindowTitle</item>-->
+    </style>
+    <style name="MyCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/bukra</item>
+    </style>
+
+    <style name="FacebookLoginButton">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/bukra</item>
+        <item name="android:padding">32dp</item>
+    </style>
+
+    <style name="titleStyle" parent="com_facebook_auth_dialog_instructions_textview">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+
+</resources>
