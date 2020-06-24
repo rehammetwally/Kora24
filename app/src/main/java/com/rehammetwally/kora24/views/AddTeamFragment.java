@@ -52,7 +52,9 @@ public class AddTeamFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-
+    public boolean onBackPressed() {
+        return true;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {

@@ -55,6 +55,7 @@ public class MyApplication extends Application {
         tv.setTypeface(ResourcesCompat.getFont(parent.getContext(), R.font.bukra));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.TOP;
+        params.topMargin=60;
         view.setLayoutParams(params);
         ViewCompat.setLayoutDirection(snackbar.getView(), ViewCompat.LAYOUT_DIRECTION_RTL);
         snackbar.show();

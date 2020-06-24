@@ -3,6 +3,7 @@ package com.rehammetwally.kora24.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -26,13 +28,19 @@ import com.rehammetwally.kora24.models.Favorite;
 import com.rehammetwally.kora24.models.Team;
 import com.rehammetwally.kora24.utils.MyApplication;
 import com.rehammetwally.kora24.viewmodels.FavouritesViewModel;
+import com.rehammetwally.kora24.views.AllBandsFragment;
 import com.rehammetwally.kora24.views.FavoriteFragment;
+import com.rehammetwally.kora24.views.LastNewsFragment;
 import com.rehammetwally.kora24.views.MainActivity;
+import com.rehammetwally.kora24.views.YourFavoriteFragment;
+
+import java.util.List;
 
 public class FavoritesAdapter extends ListAdapter<Team, FavoritesAdapter.FavoritesViewHolder> {
     private Context context;
     private Boolean isAll;
     private FavouritesViewModel favouritesViewModel;
+    private static final String TAG = "FavoritesAdapter";
 
     public FavoritesAdapter(Context context, Boolean isAll) {
         super(diffCallback);
@@ -83,11 +91,30 @@ public class FavoritesAdapter extends ListAdapter<Team, FavoritesAdapter.Favorit
                             if (s.equals("updated successfully")) {
                                 int tabIconColor = ContextCompat.getColor(context, R.color.colorFavorite);
                                 holder.favoriteItemBinding.favorite.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-//                                notifyItemChanged(position);
-//                                MyApplication.showMessageBottom(v, team.t_name + " " + context.getResources().getString(R.string.add_to_favorite));
-//                                Intent intent = new Intent(context, MainActivity.class);
-//                                intent.putExtra(FavoriteFragment.EXTRA_FAVORITE, true);
-//                                context.startActivity(intent);
+//                                YourFavoriteFragment fragment=new YourFavoriteFragment();
+//                                fragment.onResume();
+//                                favouritesViewModel.showUnFavouriteTeams().observe((LifecycleOwner) context, new Observer<List<Team>>() {
+//                                    @Override
+//                                    public void onChanged(List<Team> teams) {
+//                                        submitList(teams);
+////                                        isAll=false;
+////                                        binding.favoritesList.setAdapter(favoritesAdapter);
+//                                        notifyDataSetChanged();
+//                                    }
+//                                });
+
+//                                List<Fragment> fragmentList = ((FragmentActivity)context).getSupportFragmentManager().getFragments();
+//                                for(Fragment f : fragmentList) {
+//                                    if (f instanceof YourFavoriteFragment) {
+//                                        ((YourFavoriteFragment)f).loadFavorite();
+//                                    }
+//                                }
+//                                List<Fragment> fragmentList = ((FragmentActivity)context).getSupportFragmentManager().getFragments();
+//                                for(Fragment f : fragmentList) {
+//                                    if (f instanceof FavoriteFragment) {
+//                                        ((FavoriteFragment)f).reloadPager();
+//                                    }
+//                                }
                             }
                         }
                     });
@@ -99,6 +126,27 @@ public class FavoritesAdapter extends ListAdapter<Team, FavoritesAdapter.Favorit
 
                                 int tabIconColor = ContextCompat.getColor(context, R.color.unSelectedFavorite);
                                 holder.favoriteItemBinding.favorite.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+
+                                favouritesViewModel.showFavouriteTeams().observe((LifecycleOwner) context, new Observer<List<Team>>() {
+                                    @Override
+                                    public void onChanged(List<Team> teams) {
+                                        Log.e(TAG, "onChanged: " + teams.size());
+                                        submitList(teams);
+                                        notifyDataSetChanged();
+                                        if (teams.size() > 0) {
+                                            YourFavoriteFragment.emptyList.setVisibility(View.GONE);
+                                        } else {
+                                            YourFavoriteFragment.emptyList.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                });
+
+//                                List<Fragment> fragmentList = ((FragmentActivity)context).getSupportFragmentManager().getFragments();
+//                                for(Fragment f : fragmentList) {
+//                                    if (f instanceof AllBandsFragment) {
+//                                        ((AllBandsFragment)f).loadAllBand();
+//                                    }
+//                                }
                             }
                         }
                     });

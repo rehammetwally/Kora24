@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -67,6 +68,9 @@ import com.rehammetwally.kora24.utils.MyApplication;
 import com.rehammetwally.kora24.viewmodels.UserViewModel;
 import com.facebook.FacebookSdk;
 
+import java.io.File;
+import java.net.URI;
+
 import static android.app.Activity.RESULT_OK;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -94,7 +98,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public LoginFragment() {
         // Required empty public constructor
     }
-    
+
+    public boolean onBackPressed() {
+        return true;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -234,7 +242,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_IMAGE);
-        Log.e(TAG, "openGallery: " );
+        Log.e(TAG, "openGallery: ");
     }
 
     @Override
@@ -247,6 +255,35 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                String name = account.getPhotoUrl().toString();
+                String email = account.getEmail();
+                String password = "123456";
+//                registerWithEmailAndPassword(name, email, password,photo);
+                Log.e(TAG, "registerWithEmailAndPassword:email " + email);
+                Log.e(TAG, "registerWithEmailAndPassword:password " + password);
+                Log.e(TAG, "registerWithEmailAndPassword:name " + name);
+                Log.e(TAG, "registerWithEmailAndPassword:photo " + photo);
+                userViewModel.register(name, email, password, photo).observe(getActivity(), new Observer<User>() {
+                    @Override
+                    public void onChanged(User user) {
+                        if (user != null) {
+                            Log.e(TAG, "onChanged: " + user);
+                            Log.e(TAG, "onChanged: " + user.message);
+//                                MyApplication.showMessage(binding.contentLayout, getResources().getString(R.string.register_success));
+                            binding.registerLayout.setVisibility(View.GONE);
+                            binding.userImage.setVisibility(View.VISIBLE);
+                            binding.userNameEdittext.setVisibility(View.INVISIBLE);
+                            binding.loginButton.setText(getResources().getString(R.string.login));
+                            binding.dontHasAccount.setText(getResources().getString(R.string.dont_has_account));
+//                    Log.e(TAG, "onChanged: Firebase"+user.data.id );
+                        } else {
+                            Log.e(TAG, "onChanged: " + user.message);
+//                                MyApplication.showMessageBottom(binding.contentLayout, getResources().getString(R.string.try_again));
+                        }
+                        Log.e(TAG, "onChanged: " + user.message);
+
+                    }
+                });
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
 
@@ -254,56 +291,25 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
-        if (resultCode == RESULT_OK)
-            switch (requestCode) {
-                case GALLERY_REQUEST_CODE:
-                    //data.getData return the content URI for the selected Image
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    // Get the cursor
-                    Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
-                    //Get the column index of MediaStore.Images.Media.DATA
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    //Gets the String value in the column
-                    String imgDecodableString = cursor.getString(columnIndex);
-                    cursor.close();
-                    // Set the Image in ImageView after decoding the String
-                    Log.e(TAG, "onActivityResult: " + imgDecodableString);
-                    binding.registerImage.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString));
-                    break;
-                case REQUEST_GALLERY_IMAGE:
-                    if (resultCode == RESULT_OK) {
-                        Uri imageUri = data.getData();
-                        binding.registerImage.setImageURI(imageUri);
-//                        cropImage(imageUri);
-                    } else {
-//                        setResultCancelled();
-                    }
-                    break;
-            }
 
 
         if (requestCode == PICK_IMAGE && data != null) {
             Uri selectedImage = data.getData();
-//            binding.registerImage.setBorderWidth(0);
-//            binding.registerImage.setImageURI(selectedImage);
+            binding.registerImage.setBorderWidth(0);
+            binding.registerImage.setImageURI(selectedImage);
             photo = FileUtils.getPath(getContext(), selectedImage);
 
             Log.e(TAG, "onActivityResult: " + photo);
             Log.e(TAG, "onActivityResult: " + selectedImage.toString());
 //            binding.registerImage.setImageURI(selectedImage);
-//            Glide.with(getContext())
-//                    .setDefaultRequestOptions(new RequestOptions())
-//                    .load(photo)
-//                    .circleCrop()
-//                    .placeholder(R.mipmap.ic_launcher)
-//                    .into(binding.registerImage);
+            Glide.with(getContext())
+                    .setDefaultRequestOptions(new RequestOptions())
+                    .load(photo)
+                    .circleCrop()
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(binding.registerImage);
         }
     }
-
-
 
 
     private void facebookLogin() {
@@ -459,8 +465,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-//                            if (user != null)
-//                                MyApplication.showMessage(binding.contentLayout, getResources().getString(R.string.login_success));
+
                             userDetails(user);
                         } else {
                             MyApplication.showMessage(binding.contentLayout, task.getException().getMessage());
@@ -520,12 +525,30 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if (task.isSuccessful()) {
                     Log.e(TAG, "onComplete: success");
                     FirebaseUser user = firebaseAuth.getCurrentUser();
-                    String name = user.getDisplayName();
+                    String name = user.getPhotoUrl().toString();
                     String email = user.getEmail();
-                    String password = user.getUid();
-                    String photo = "http://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?type=large";
-                    Log.e(TAG, "onComplete: " + photo);
-                    registerWithEmailAndPassword(name, email, password, photo);
+                    String password = "123456";
+                    userViewModel.register(name, email, password, photo).observe(getActivity(), new Observer<User>() {
+                        @Override
+                        public void onChanged(User user) {
+                            if (user != null) {
+                                Log.e(TAG, "onChanged: " + user);
+                                Log.e(TAG, "onChanged: " + user.message);
+//                                MyApplication.showMessage(binding.contentLayout, getResources().getString(R.string.register_success));
+                                binding.registerLayout.setVisibility(View.GONE);
+                                binding.userImage.setVisibility(View.VISIBLE);
+                                binding.userNameEdittext.setVisibility(View.INVISIBLE);
+                                binding.loginButton.setText(getResources().getString(R.string.login));
+                                binding.dontHasAccount.setText(getResources().getString(R.string.dont_has_account));
+//                    Log.e(TAG, "onChanged: Firebase"+user.data.id );
+                            } else {
+                                Log.e(TAG, "onChanged: " + user.message);
+//                                MyApplication.showMessageBottom(binding.contentLayout, getResources().getString(R.string.try_again));
+                            }
+                            Log.e(TAG, "onChanged: " + user.message);
+
+                        }
+                    });
                     userDetails(user);
                 } else {
 
@@ -539,60 +562,59 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void userDetails(FirebaseUser user) {
-        if (user != null) {
-            Log.e(TAG, "userDetails:FirebaseUser " + user.getDisplayName());
-            Log.e(TAG, "userDetails:FirebaseUser " + user.getEmail());
-            Log.e(TAG, "userDetails:FirebaseUser " + user.getUid());
-            Log.e(TAG, "userDetails:FirebaseUser " + user.getPhotoUrl().getPath());
+    private void userDetails(FirebaseUser firebaseUser) {
+        if (firebaseUser != null) {
+            Log.e(TAG, "userDetails:FirebaseUser " + firebaseUser.getDisplayName());
+            Log.e(TAG, "userDetails:FirebaseUser " + firebaseUser.getEmail());
+            Log.e(TAG, "userDetails:FirebaseUser " + firebaseUser.getUid());
+            Log.e(TAG, "userDetails:FirebaseUser " + firebaseUser.getPhotoUrl().getPath());
 
-            userViewModel.login(user.getEmail().toString(), user.getUid().toString()).observe(this, new Observer<User>() {
+            userViewModel.login(firebaseUser.getEmail().toString(), "123456").observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User user) {
                     Log.e(TAG, "onChanged: " + user);
                     if (user.message.equals("Returned Successfully")) {
-                        MyApplication.showMessageBottom(binding.contentLayout, getResources().getString(R.string.login_success));
+                        Log.e(TAG, "onChanged: " + user.message);
+
                         MyApplication.getPref().putInt("USERID", user.data.id);
                         MyApplication.getPref().putBoolean("LOGIN", true);
-                        MyApplication.getPref().putString("EMAIL", user.data.email);
-                        MyApplication.getPref().putString("NAME", user.data.name);
-                        MyApplication.getPref().putString("PHOTO", "http://kora24life.tk/kora24/public/User/" + user.data.photo);
+                        MyApplication.getPref().putBoolean("SOCIAL_LOGIN", true);
                         MyApplication.getPref().putInt("TYPE", user.data.user_type);
+                        MyApplication.getPref().putString("EMAIL", user.data.email);
+                        MyApplication.getPref().putString("NAME", firebaseUser.getDisplayName());
+                        MyApplication.getPref().putString("PHOTO", user.data.name);
                         userDetails(user);
-                        // to refresh activity
-                        Intent intent = getActivity().getIntent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        getActivity().finish();
-                        startActivity(intent);
+                        if (firebaseUser.getPhotoUrl() != null) {
+                            Glide.with(getContext())
+                                    .setDefaultRequestOptions(new RequestOptions())
+                                    .load(firebaseUser.getPhotoUrl())
+                                    .circleCrop()
+                                    .placeholder(R.drawable.ic_launcher)
+                                    .into(binding.userImage);
+                        }
+                        binding.userNameEdittext.setVisibility(View.VISIBLE);
+                        binding.userNameEdittext.setText(firebaseUser.getDisplayName());
+                        binding.userNameEdittext.setEnabled(false);
+                        resetEditText(binding.userNameEdittext, Gravity.CENTER, getResources().getColor(android.R.color.white), getResources().getColor(android.R.color.transparent));
+                        binding.userNameEdittext.setText(firebaseUser.getDisplayName());
+                        binding.view2.setVisibility(View.INVISIBLE);
+                        resetEditText(binding.emailEdittext, Gravity.CENTER, getResources().getColor(android.R.color.white), getResources().getColor(android.R.color.transparent));
+                        binding.emailEdittext.setText(firebaseUser.getEmail());
+                        binding.emailEdittext.setEnabled(false);
+                        binding.view.setVisibility(View.INVISIBLE);
+                        binding.passwordEdittext.setVisibility(View.INVISIBLE);
+                        binding.loginButton.setText(getResources().getString(R.string.logout));
+                        binding.dontHasAccount.setVisibility(View.INVISIBLE);
+                        binding.googleLoginButton.setVisibility(View.INVISIBLE);
+                        binding.facebookLoginFrameLayout.setVisibility(View.INVISIBLE);
                     } else if (user.message.equals("Not Found")) {
                         MyApplication.showMessageBottom(binding.contentLayout, getResources().getString(R.string.user_not_found));
-
+                        Log.e(TAG, "onChanged: " + user.message);
                     }
                     Log.e(TAG, "onChanged: " + user.message);
 
                 }
             });
-
-            if (user.getPhotoUrl() != null) {
-                Glide.with(getContext())
-                        .setDefaultRequestOptions(new RequestOptions())
-                        .load(user.getPhotoUrl())
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_launcher)
-                        .into(binding.userImage);
-            }
-            binding.userNameEdittext.setVisibility(View.VISIBLE);
-            resetEditText(binding.userNameEdittext, Gravity.CENTER, getResources().getColor(android.R.color.white), getResources().getColor(android.R.color.transparent));
-            binding.userNameEdittext.setText(user.getDisplayName());
-            binding.view2.setVisibility(View.INVISIBLE);
-            resetEditText(binding.emailEdittext, Gravity.CENTER, getResources().getColor(android.R.color.white), getResources().getColor(android.R.color.transparent));
-            binding.emailEdittext.setText(user.getEmail());
-            binding.view.setVisibility(View.INVISIBLE);
-            binding.passwordEdittext.setVisibility(View.INVISIBLE);
-            binding.loginButton.setText(getResources().getString(R.string.logout));
-            binding.dontHasAccount.setVisibility(View.INVISIBLE);
-            binding.googleLoginButton.setVisibility(View.INVISIBLE);
-            binding.facebookLoginFrameLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -625,18 +647,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             binding.googleLoginButton.setVisibility(View.INVISIBLE);
             binding.facebookLoginFrameLayout.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private void pickFromGallery() {
-        //Create an Intent with action as ACTION_PICK
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        // Sets the type as image/*. This ensures only components of type image are selected
-        intent.setType("image/*");
-        //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
-        String[] mimeTypes = {"image/jpeg", "image/png"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        // Launching the Intent
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
     @Override
@@ -686,8 +696,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         userViewModel.register(name, email, password, photo).observe(getActivity(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                Log.e(TAG, "onChanged: " + user);
                 if (user != null) {
+                    Log.e(TAG, "onChanged: " + user);
                     MyApplication.showMessage(binding.contentLayout, getResources().getString(R.string.register_success));
                     binding.registerLayout.setVisibility(View.GONE);
                     binding.userImage.setVisibility(View.VISIBLE);
@@ -726,10 +736,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.custom_dialog, viewGroup, false);
         TextView title = dialogView.findViewById(R.id.dialog_title);
         title.setGravity(Gravity.RIGHT);
+        title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         title.setText(getResources().getString(R.string.logout));
         TextView message = dialogView.findViewById(R.id.dialog_message);
         message.setGravity(Gravity.RIGHT);
         message.setText(getResources().getString(R.string.logout_confirm));
+        message.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         TextView positive = dialogView.findViewById(R.id.dialog_positive);
         TextView negative = dialogView.findViewById(R.id.dialog_negative);
         positive.setText(getResources().getString(R.string.yes));

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -18,50 +19,63 @@
                 android:id="@+id/container_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
-                    android:layout_gravity="center"
-                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:background="?attr/colorPrimary"
+                    android:gravity="center"
                     android:minHeight="?attr/actionBarSize">
 
                     <RelativeLayout
-                        android:layout_marginLeft="16dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
                         android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize">
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center">
 
                         <ImageView
                             android:id="@+id/logo"
                             android:layout_width="100dp"
                             android:layout_height="match_parent"
                             android:layout_centerInParent="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
-                            android:src="@drawable/logo"/>
+                            android:src="@drawable/logo" />
 
                         <TextView
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
                             android:id="@+id/toolbarTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
                             android:fontFamily="@font/bukra"
+                            android:gravity="center"
                             android:textAppearance="?android:textAppearanceMedium"
                             android:textColor="@android:color/white" />
 
+                        <EditText
+                            android:backgroundTint="@android:color/white"
+                            android:visibility="gone"
+                            android:id="@+id/search"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/bukra"
+                            android:hint="ابحث هنا ....."
+                            android:textColorHint="@android:color/white"
+                            android:textColor="@android:color/white"
+                            android:textSize="13dp"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="center_vertical" />
                     </RelativeLayout>
 
 

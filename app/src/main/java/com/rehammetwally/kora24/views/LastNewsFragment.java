@@ -45,7 +45,9 @@ public class LastNewsFragment extends Fragment {
     public LastNewsFragment() {
         // Required empty public constructor
     }
-
+    public boolean onBackPressed() {
+        return true;
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,9 +143,7 @@ public class LastNewsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.putExtra(MainActivity.EXTRA_MAIN, true);
-                startActivity(intent);
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -9,11 +9,17 @@
         <item name="backgroundColor">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="background">@android:color/white</item>
+        <item name="dialogTheme">@style/LightDialogTheme</item>
     </style>
 
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <style name="LightDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@android:color/white</item>
+    </style>
+    <style name="DarkDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
     <style name="NightModeAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
@@ -21,6 +27,7 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="background">@color/colorPrimary</item>
+        <item name="dialogTheme">@style/DarkDialogTheme</item>
     </style>
 
     <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -30,6 +37,7 @@
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="background">@android:color/white</item>
+        <item name="dialogTheme">@style/LightDialogTheme</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >

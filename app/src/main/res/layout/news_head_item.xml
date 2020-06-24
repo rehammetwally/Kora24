@@ -34,22 +34,22 @@
                 android:layout_marginBottom="8dp"
                 android:contentDescription="@null"
                 android:scaleType="centerCrop"
-                app:avatar="@{news.icon()}" />
+                app:avatar="@{news.icon}" />
 
             <TextView
                 android:id="@+id/last_news_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/bukra"
+                android:gravity="right"
                 android:lineSpacingExtra="8dp"
                 android:text="@{news.title}"
                 android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:layout_gravity="right"
-                android:gravity="right" />
+                android:textSize="15sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,8 +64,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="17dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_calendar" />
 
                     <TextView
                         android:id="@+id/last_news_date"
@@ -73,6 +82,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/bukra"
                         android:text="@{news.news_date}"
+                        android:textColor="#9899AF"
                         android:textSize="12sp" />
 
                     <LinearLayout
@@ -95,7 +105,8 @@
                             android:id="@+id/last_news_views_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{StringsUtils.toString(news.views)}"
+                            android:text="@{StringsUtils.formatNumber(news.views)}"
+                            android:textColor="#9899AF"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -110,8 +121,8 @@
                             android:id="@+id/last_news_comments_image"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
                             android:contentDescription="@null"
                             android:src="@drawable/ic_comments" />
 
@@ -120,6 +131,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@{StringsUtils.toString(news.comments)}"
+                            android:textColor="#9899AF"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -137,4 +149,133 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:id="@+id/head_card"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginLeft="0dp"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:layout_marginRight="0dp"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:background="@android:color/white"-->
+    <!--        app:cardCornerRadius="16dp">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:orientation="vertical">-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/last_news_image"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="230dp"-->
+    <!--                android:layout_marginBottom="8dp"-->
+    <!--                android:contentDescription="@null"-->
+    <!--                android:scaleType="centerCrop"-->
+    <!--                app:avatar="@{news.icon()}" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/last_news_title"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginLeft="16dp"-->
+    <!--                android:layout_marginRight="16dp"-->
+    <!--                android:layout_marginBottom="8dp"-->
+    <!--                android:fontFamily="@font/bukra"-->
+    <!--                android:lineSpacingExtra="8dp"-->
+    <!--                android:text="@{news.title}"-->
+    <!--                android:textColor="@color/colorPrimary"-->
+    <!--                android:textSize="15sp"-->
+    <!--                android:layout_gravity="right"-->
+    <!--                android:gravity="right" />-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_gravity="center_vertical"-->
+    <!--                android:layout_marginLeft="16dp"-->
+    <!--                android:layout_marginRight="16dp"-->
+    <!--                android:layout_marginBottom="8dp"-->
+    <!--                android:gravity="center_vertical"-->
+    <!--                android:orientation="horizontal">-->
+
+    <!--                <LinearLayout-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:orientation="horizontal">-->
+
+    <!--                    <TextView-->
+    <!--                        android:id="@+id/last_news_date"-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:fontFamily="@font/bukra"-->
+    <!--                        android:text="@{news.news_date}"-->
+    <!--                        android:textColor="@color/colorPrimary"-->
+    <!--                        android:textSize="12sp" />-->
+
+    <!--                    <LinearLayout-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_gravity="center_vertical"-->
+    <!--                        android:layout_marginLeft="8dp"-->
+    <!--                        android:layout_marginRight="8dp"-->
+    <!--                        android:gravity="center_vertical"-->
+    <!--                        android:orientation="horizontal">-->
+
+    <!--                        <ImageView-->
+    <!--                            android:id="@+id/last_news_views_image"-->
+    <!--                            android:layout_width="20dp"-->
+    <!--                            android:layout_height="20dp"-->
+    <!--                            android:contentDescription="@null"-->
+    <!--                            app:avatar="@{news.imageResource}" />-->
+
+    <!--                        <TextView-->
+    <!--                            android:id="@+id/last_news_views_text"-->
+    <!--                            android:layout_width="wrap_content"-->
+    <!--                            android:layout_height="wrap_content"-->
+    <!--                            android:text="@{StringsUtils.toString(news.views)}"-->
+    <!--                            android:textSize="12sp"-->
+    <!--                            android:textColor="#A7A5B1" />-->
+    <!--                    </LinearLayout>-->
+
+    <!--                    <LinearLayout-->
+    <!--                        android:layout_width="wrap_content"-->
+    <!--                        android:layout_height="wrap_content"-->
+    <!--                        android:layout_gravity="center_vertical"-->
+    <!--                        android:gravity="center_vertical"-->
+    <!--                        android:orientation="horizontal">-->
+
+    <!--                        <ImageView-->
+    <!--                            android:id="@+id/last_news_comments_image"-->
+    <!--                            android:layout_width="20dp"-->
+    <!--                            android:layout_height="20dp"-->
+    <!--                            android:layout_marginLeft="8dp"-->
+    <!--                            android:layout_marginRight="8dp"-->
+    <!--                            android:contentDescription="@null"-->
+    <!--                            android:src="@drawable/ic_comments" />-->
+
+    <!--                        <TextView-->
+    <!--                            android:id="@+id/last_news_comments_text"-->
+    <!--                            android:layout_width="wrap_content"-->
+    <!--                            android:layout_height="wrap_content"-->
+    <!--                            android:text="@{StringsUtils.toString(news.comments)}"-->
+    <!--                            android:textSize="12sp"-->
+    <!--                            android:textColor="#A7A5B1"/>-->
+    <!--                    </LinearLayout>-->
+
+
+    <!--                </LinearLayout>-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/share_head_news"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_weight="0"-->
+    <!--                    android:src="@drawable/ic_share"-->
+    <!--                    android:tint="@color/colorPrimary" />-->
+    <!--            </LinearLayout>-->
+    <!--        </LinearLayout>-->
+
+    <!--    </androidx.cardview.widget.CardView>-->
 </layout>

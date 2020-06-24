@@ -40,14 +40,45 @@ public class FixturesDetailsActivity extends AppCompatActivity {
             public void onChanged(MessageMatch messageMatch) {
                 Log.e(TAG, "onChanged: "+messageMatch.match.commentor );
                 activityFixturesDetailsBinding.setMatch(messageMatch.match);
+                setupAppBar(messageMatch);
             }
         });
         setupToolbar();
-        setupAppBar();
 
     }
 
 
+
+    private void setupAppBar(MessageMatch messageMatch) {
+        activityFixturesDetailsBinding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    isShow = true;
+                    showTitle(messageMatch.match.hometeam.t_name+" - "+messageMatch.match.awayteam.t_name);
+                } else if (isShow) {
+                    isShow = false;
+                    hideTitle();
+                }
+            }
+        });
+    }
+
+    private void hideTitle() {
+        activityFixturesDetailsBinding.toolbarTitle.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showTitle(String title) {
+        activityFixturesDetailsBinding.toolbarTitle.setVisibility(View.VISIBLE);
+        activityFixturesDetailsBinding.toolbarTitle.setText(title);
+    }
     void setupToolbar() {
         setSupportActionBar(activityFixturesDetailsBinding.toolbar);
         activityFixturesDetailsBinding.drawerLayout.addDrawerListener(mDrawerToggle);
@@ -63,28 +94,11 @@ public class FixturesDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(FixturesDetailsActivity.this, MainActivity.class));
+                finish();
             }
         });
         mDrawerToggle.syncState();
     }
 
 
-    private void setupAppBar() {
-        activityFixturesDetailsBinding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    isShow = true;
-                } else if (isShow) {
-                    isShow = false;
-                }
-            }
-        });
-    }
 }

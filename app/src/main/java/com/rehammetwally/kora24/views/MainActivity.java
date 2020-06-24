@@ -2,6 +2,7 @@ package com.rehammetwally.kora24.views;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -14,18 +15,17 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.rehammetwally.kora24.R;
 import com.rehammetwally.kora24.adapters.DrawerItemCustomAdapter;
 import com.rehammetwally.kora24.databinding.ActivityMainBinding;
 import com.rehammetwally.kora24.models.NavModel;
 import com.rehammetwally.kora24.utils.MyApplication;
 
-import java.nio.channels.ClosedByInterruptException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,15 +41,190 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding activityMainBinding;
     private static final String TAG = "MainActivity";
     private List<NavModel> drawerItem = new ArrayList<>();
+    public static EditText search;
+    public static ImageView logo;
+    public static TextView toolbarText;
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e(TAG, "onStart: "+MyApplication.getPref().getInt("TYPE")  );
-//        if (MyApplication.getPref().getInt("TYPE") == 1){
-            setupDrawer();
-//        }
+    public void onBackPressed() {
+
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+
+        boolean handled = false;
+        for (Fragment f : fragmentList) {
+            if (f instanceof LastNewsFragment) {
+                handled = ((LastNewsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+                }
+            }
+            if (f instanceof FixturesFragment) {
+                handled = ((FixturesFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof AllTournamentsFragment) {
+                handled = ((AllTournamentsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof FavoriteFragment) {
+                handled = ((FavoriteFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+
+            if (f instanceof NotificationsFragment) {
+                handled = ((NotificationsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof SettingsFragment) {
+                handled = ((SettingsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof PrivacyPolicyFragment) {
+                handled = ((PrivacyPolicyFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof LoginFragment) {
+                handled = ((LoginFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof AddNewsFragment) {
+                handled = ((AddNewsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+
+            if (f instanceof AddCompitationNewsFragment) {
+                handled = ((AddCompitationNewsFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof AddGameFragment) {
+                handled = ((AddGameFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof UpdateGameResultFragment) {
+                handled = ((UpdateGameResultFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+
+            if (f instanceof AddCompitationFragment) {
+                handled = ((AddCompitationFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof AddSeasonFragment) {
+                handled = ((AddSeasonFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+
+            if (f instanceof AddCountryFragment) {
+                handled = ((AddCountryFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+            if (f instanceof AddTeamFragment) {
+                handled = ((AddTeamFragment) f).onBackPressed();
+
+                if (handled) {
+                    Log.e(TAG, "onBackPressed: FixturesFragment");
+                    selectItem(0);
+//                    break;
+                }
+            }
+
+
+        }
+
+        if (!handled) {
+            super.onBackPressed();
+        }
     }
+
+
+//    public static void loadFavorite() {
+//        List<Fragment> fragmentList = this.getContext().getSupportFragmentManager().getFragments();
+//
+//        boolean handled = false;
+//        for (Fragment f : fragmentList) {
+//            if (f instanceof FavoriteFragment) {
+//                handled = ((FavoriteFragment) f).onReload();
+//
+//                if (handled) {
+//                    Log.e(TAG, "onReload:");
+//                    selectItem(4);
+////                    break;
+//                }
+//            }
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +234,12 @@ public class MainActivity extends AppCompatActivity {
         Log.e(TAG, "onCreate: " + themeSelected);
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        int admin = MyApplication.getPref().getInt("TYPE");
-
 
         setupToolbar();
         setupDrawer();
+        search = activityMainBinding.search;
+        logo = activityMainBinding.logo;
+        toolbarText = activityMainBinding.toolbarTitle;
 //        MobileAds.initialize(this, "ca-app-pub-6734139800346657~5107154850");
 //        MobileAds.initialize(this, new OnInitializationCompleteListener() {
 //            @Override
@@ -104,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
             if (intent.hasExtra(SettingsFragment.EXTRA_SETTINGS)) {
-                selectItem(6);
+                selectItem(0);
             }
             if (intent.hasExtra(EXTRA_MAIN)) {
                 selectItem(0);
@@ -141,12 +317,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showLogo() {
-        activityMainBinding.logo.setVisibility(View.VISIBLE);
-        activityMainBinding.toolbarTitle.setVisibility(View.GONE);
+    private  void showLogo() {
+       activityMainBinding. logo.setVisibility(View.VISIBLE);
+       activityMainBinding.toolbarTitle.setVisibility(View.GONE);
     }
 
-    private void hideLogo() {
+    private  void hideLogo() {
         activityMainBinding.logo.setVisibility(View.GONE);
         activityMainBinding.toolbarTitle.setVisibility(View.VISIBLE);
     }

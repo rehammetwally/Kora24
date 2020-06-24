@@ -89,7 +89,7 @@ public class FixturesTournamentsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getActivity().finish();
+//                getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

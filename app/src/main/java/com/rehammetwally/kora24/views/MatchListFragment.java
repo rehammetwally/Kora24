@@ -107,9 +107,9 @@ public class MatchListFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.putExtra(MainActivity.EXTRA_MAIN, true);
-                startActivity(intent);
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+//                intent.putExtra(MainActivity.EXTRA_MAIN, true);
+//                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

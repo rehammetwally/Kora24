@@ -28,7 +28,9 @@ public class AddCountryFragment extends Fragment implements View.OnClickListener
     public AddCountryFragment() {
         // Required empty public constructor
     }
-
+    public boolean onBackPressed() {
+        return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

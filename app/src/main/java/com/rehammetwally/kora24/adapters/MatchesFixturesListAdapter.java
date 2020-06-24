@@ -21,7 +21,9 @@ import com.rehammetwally.kora24.interfaces.ItemClickListener;
 import com.rehammetwally.kora24.models.GamesList;
 import com.rehammetwally.kora24.models.Match;
 import com.rehammetwally.kora24.models.ModelObject;
+import com.rehammetwally.kora24.models.Tournaments;
 import com.rehammetwally.kora24.views.FixturesDetailsActivity;
+import com.rehammetwally.kora24.views.TournamentsDetailsActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -91,6 +93,20 @@ public class MatchesFixturesListAdapter extends RecyclerView.Adapter<MatchesFixt
         GamesMatchesAdapter matchesAdapter = new GamesMatchesAdapter(context);
         matchesAdapter.submitList(list.get(position).games);
         holder.matchesListItemBinding.fixturesMatchesListItems.setAdapter(matchesAdapter);
+        holder.matchesListItemBinding.tournamentsCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(context, TournamentsDetailsActivity.class);
+                Tournaments tournaments=new Tournaments();
+                tournaments.id=games.id;
+                tournaments.created_at=games.created_at;
+                tournaments.updated_at=games.updated_at;
+                tournaments.logo=games.c_logo;
+                tournaments.title=games.c_title;
+                intent.putExtra("TOURNAMENTS",tournaments);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

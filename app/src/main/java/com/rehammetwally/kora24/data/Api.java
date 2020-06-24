@@ -11,6 +11,7 @@ import com.rehammetwally.kora24.models.MessageMatch;
 import com.rehammetwally.kora24.models.MessageSeasons;
 import com.rehammetwally.kora24.models.News;
 import com.rehammetwally.kora24.models.NewsReation;
+import com.rehammetwally.kora24.models.SearchResult;
 import com.rehammetwally.kora24.models.Team;
 import com.rehammetwally.kora24.models.TeamCompetition;
 import com.rehammetwally.kora24.models.Tournaments;
@@ -33,10 +34,15 @@ import retrofit2.http.Query;
 public interface Api {
     @Multipart
     @POST("register")
-    Call<User> register(@Query("name") String name,
-                        @Query(value = "email", encoded=true) String email,
+    Call<User> register(@Query(value = "name", encoded = true) String name,
+                        @Query(value = "email", encoded = true) String email,
                         @Query("password") String password,
                         @Part MultipartBody.Part photo);
+
+    @POST("register")
+    Call<User> register(@Query(value = "name", encoded = true) String name,
+                        @Query(value = "email", encoded = true) String email,
+                        @Query("password") String password);
 
     @POST("addcomment")
     Call<Message> addComment(@Query("comment") String comment, @Query("user_id") int user_id, @Query("news_id") int news_id);
@@ -67,7 +73,7 @@ public interface Api {
     Call<CommentsReation> showCommentsReation(@Path("comment_id") int comment_id);
 
     @POST("login")
-    Call<User> login(@Query(value = "email",encoded = true) String email, @Query("password") String password);
+    Call<User> login(@Query(value = "email", encoded = true) String email, @Query("password") String password);
 
     @Multipart
     @POST("addnews")
@@ -137,6 +143,9 @@ public interface Api {
 
     @GET("gamesschedule/{term}")
     Call<MatchList> getGamesSchedule(@Path("term") String date);
+
+    @POST("search")
+    Call<SearchResult> search(@Query("term") String term);
 
     @GET("gamesbydate/{term}")
     Call<GamesList> getGamesByDate(@Path("term") String date);

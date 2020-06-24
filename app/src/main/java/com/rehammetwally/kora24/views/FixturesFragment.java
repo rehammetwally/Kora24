@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.service.autofill.FieldClassification;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,9 @@ public class FixturesFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    public boolean onBackPressed() {
+        return true;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,47 +91,47 @@ public class FixturesFragment extends Fragment {
 
 
 
-                        binding.next.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Log.e(TAG, "onClick:Next ");
-                                if (currentPage < dayDateFixtureAdapter.getItemCount() - 1) {
-                                    currentPage += 1;
-                                    binding.dayDateList.getLayoutManager().scrollToPosition(currentPage);
-                                    binding.dayDateList.scrollToPosition(currentPage);
-                                    dayDateFixtureAdapter.daysSpinnerAdapter.getItem(currentPage);
-                                    dayDateFixtureAdapter.spinner.setSelection(currentPage);
 
-                                } else {
-//                    binding.next.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorBackground), android.graphics.PorterDuff.Mode.SRC_IN);
-
-                                }
-                                Log.e(TAG, "onClick:next " + currentPage);
-                            }
-                        });
-
-                        binding.prev.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Log.e(TAG, "onClick:Prev ");
-                                if (currentPage > 0) {
-                                    currentPage -= 1;
-                                    binding.dayDateList.scrollToPosition(currentPage);
-                                    dayDateFixtureAdapter.daysSpinnerAdapter.getItem(currentPage);
-                                    dayDateFixtureAdapter.spinner.setSelection(currentPage);
-                                } else {
-//                    binding.prev.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorBackground), android.graphics.PorterDuff.Mode.SRC_IN);
-
-                                }
-                                Log.e(TAG, "onClick:prev " + currentPage);
-                            }
-                        });
                     }
             }
         });
 
 
+        binding.next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "onClick:Next ");
+                if (currentPage < dayDateFixtureAdapter.getItemCount() - 1) {
+                    currentPage += 1;
+                    binding.dayDateList.getLayoutManager().scrollToPosition(currentPage);
+                    binding.dayDateList.scrollToPosition(currentPage);
+//                    dayDateFixtureAdapter.daysSpinnerAdapter.getItem(currentPage);
+//                    dayDateFixtureAdapter.spinner.setSelection(currentPage);
 
+                } else {
+//                    binding.next.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorBackground), android.graphics.PorterDuff.Mode.SRC_IN);
+
+                }
+                Log.e(TAG, "onClick:next " + currentPage);
+            }
+        });
+
+        binding.prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "onClick:Prev ");
+                if (currentPage > 0) {
+                    currentPage -= 1;
+                    binding.dayDateList.scrollToPosition(currentPage);
+//                    dayDateFixtureAdapter.daysSpinnerAdapter.getItem(currentPage);
+//                    dayDateFixtureAdapter.spinner.setSelection(currentPage);
+                } else {
+//                    binding.prev.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorBackground), android.graphics.PorterDuff.Mode.SRC_IN);
+
+                }
+                Log.e(TAG, "onClick:prev " + currentPage);
+            }
+        });
         return view;
     }
 

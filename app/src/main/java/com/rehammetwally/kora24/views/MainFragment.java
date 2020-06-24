@@ -13,13 +13,18 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.google.android.gms.ads.MobileAds;
@@ -27,11 +32,13 @@ import com.rehammetwally.kora24.R;
 import com.rehammetwally.kora24.adapters.ClubsLogoAdapter;
 import com.rehammetwally.kora24.adapters.NewsAdapter;
 import com.rehammetwally.kora24.adapters.MatchesAdapter;
+import com.rehammetwally.kora24.adapters.SearchAdapter;
 import com.rehammetwally.kora24.databinding.FragmentMainBinding;
 import com.rehammetwally.kora24.models.MatchList;
 import com.rehammetwally.kora24.models.News;
 import com.rehammetwally.kora24.models.Match;
 import com.rehammetwally.kora24.models.NewsReation;
+import com.rehammetwally.kora24.models.SearchResult;
 import com.rehammetwally.kora24.models.Team;
 import com.rehammetwally.kora24.utils.MyApplication;
 import com.rehammetwally.kora24.viewmodels.NewsViewModel;
@@ -49,7 +56,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment implements View.OnClickListener {
+public class MainFragment extends Fragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     public static final String EXTRA_FIXTURE = "EXTRA_FIXTURE";
     private FragmentMainBinding binding;
@@ -103,7 +110,44 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        binding.searchList.setHasFixedSize(true);
+        binding.searchList.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.searchList.getContext(),
+                DividerItemDecoration.VERTICAL);
+        binding.searchList.addItemDecoration(dividerItemDecoration);
+        MainActivity.search.setOnEditorActionListener(this);
+        MainActivity.search.addTextChangedListener(new TextWatcher() {
 
+            public void afterTextChanged(Editable s) {
+                Log.e(TAG, "afterTextChanged: " + s);
+                if (s.toString().isEmpty() || s == null || s.equals(" ")|| s.equals("")) {
+                    binding.searchList.setVisibility(View.GONE);
+                    binding.mainLayout.setVisibility(View.VISIBLE);
+                } else {
+                    search(s.toString());
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.e(TAG, "beforeTextChanged: " + s);
+                if (s.toString().isEmpty() || s == null|| s.equals(" ")|| s.equals("")) {
+                    binding.searchList.setVisibility(View.GONE);
+                    binding.mainLayout.setVisibility(View.VISIBLE);
+                } else {
+                    search(s.toString());
+                }
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e(TAG, "onTextChanged: " + s);
+                if (s.toString().isEmpty() || s == null|| s.equals(" ")|| s.equals("")) {
+                    binding.searchList.setVisibility(View.GONE);
+                    binding.mainLayout.setVisibility(View.VISIBLE);
+                } else {
+                    search(s.toString());
+                }
+            }
+        });
         showClubs();
         showMatches();
 
@@ -125,7 +169,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void showMostWatched(List<News> news) {
         binding.mostWatchedList.setHasFixedSize(true);
         binding.mostWatchedList.setLayoutManager(new LinearLayoutManager(getContext()));
-        newsAdapter = new NewsAdapter(getContext(),newsViewModel);
+        newsAdapter = new NewsAdapter(getContext(), newsViewModel);
         newsAdapter.submitList(news);
         binding.mostWatchedList.setAdapter(newsAdapter);
     }
@@ -201,7 +245,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()) {
             case R.id.search:
-                Toast.makeText(getContext(), "Search", Toast.LENGTH_SHORT).show();
+                MainActivity.search.setVisibility(View.VISIBLE);
+                MainActivity.logo.setVisibility(View.GONE);
+                MainActivity.toolbarText.setVisibility(View.GONE);
                 return true;
             case R.id.share:
                 MyApplication.shareApp(getContext());
@@ -230,5 +276,59 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 MyApplication.shareApp(getContext());
                 break;
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH
+                || actionId == EditorInfo.IME_ACTION_DONE
+                || event.getAction() == KeyEvent.ACTION_DOWN
+                || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+            Log.e("search", v.getText().toString());
+            String q = v.getText().toString();
+            if (q.isEmpty() || q == null) {
+                MyApplication.showMessageBottom(binding.nestedScrollView, getResources().getString(R.string.error_message_empty));
+                binding.searchList.setVisibility(View.GONE);
+                binding.mainLayout.setVisibility(View.VISIBLE);
+            } else {
+                search(q);
+            }
+
+
+            return true;
+        }
+        return false;
+    }
+
+    private void search(String q) {
+        List<SearchResult.Result> results = new ArrayList<>();
+        newsViewModel.search(q).observe((LifecycleOwner) getContext(), new Observer<SearchResult>() {
+            @Override
+            public void onChanged(SearchResult searchResult) {
+                if (searchResult.message.equals("Returned Successfully")) {
+                    SearchAdapter searchAdapter = new SearchAdapter(getContext());
+
+                    for (int i = 0; i < searchResult.results.size(); i++) {
+                        for (int j = 0; j < searchResult.results.get(i).size(); j++) {
+                            if (searchResult.results.get(i).get(j).name != null) {
+                                results.add(searchResult.results.get(i).get(j));
+                            }
+                            Log.e(TAG, "onChanged: " + searchResult.results.get(i).get(j).name);
+                        }
+                    }
+                    if (results.size() > 0) {
+                        binding.searchList.setVisibility(View.VISIBLE);
+                        binding.mainLayout.setVisibility(View.GONE);
+                        searchAdapter.submitList(results);
+                        binding.searchList.setAdapter(searchAdapter);
+                        Log.e(TAG, "onChanged: " + results.size());
+                    } else {
+                        MyApplication.showMessageBottom(binding.nestedScrollView, getResources().getString(R.string.search_empty) + " " + q);
+                        binding.searchList.setVisibility(View.GONE);
+                        binding.mainLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
     }
 }

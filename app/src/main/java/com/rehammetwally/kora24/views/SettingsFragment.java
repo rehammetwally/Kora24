@@ -69,7 +69,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public SettingsFragment() {
     }
 
-
+    public boolean onBackPressed() {
+        return true;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -177,6 +179,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     Intent intent = new Intent(getContext(), MainActivity.class);
                     intent.putExtra(EXTRA_SETTINGS, true);
                     startActivityForResult(intent, SETTING_REQUEST_CODE);
+                    getActivity().finish();
                 }
 
                 if (switchButton.getId() == R.id.matches_reminder_switch) {

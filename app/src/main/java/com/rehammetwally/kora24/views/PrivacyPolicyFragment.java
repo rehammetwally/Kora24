@@ -29,7 +29,9 @@ public class PrivacyPolicyFragment extends Fragment {
     public PrivacyPolicyFragment() {
         // Required empty public constructor
     }
-
+    public boolean onBackPressed() {
+        return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +42,6 @@ public class PrivacyPolicyFragment extends Fragment {
 //        http://kora24life-tk.preview-domain.com/kora24-privacy/privacy_policy.html
         WebSettings webSettings = binding.webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
         binding.webview.loadUrl("http://kora24life-tk.preview-domain.com/kora24-privacy/privacy_policy.html");
         return view;
     }

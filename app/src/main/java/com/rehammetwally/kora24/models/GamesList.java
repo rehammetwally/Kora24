@@ -20,6 +20,7 @@ public class GamesList {
     private static final String TAG = "GamesList";
 
     public class Games {
+//        public Tournaments tournaments;
         @SerializedName("id")
         public int id;
         @SerializedName("c_title")

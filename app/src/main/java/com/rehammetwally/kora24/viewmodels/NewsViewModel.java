@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.rehammetwally.kora24.models.News;
 import com.rehammetwally.kora24.models.NewsReation;
+import com.rehammetwally.kora24.models.SearchResult;
 import com.rehammetwally.kora24.models.User;
 import com.rehammetwally.kora24.repositories.NewsRepository;
 import com.rehammetwally.kora24.repositories.UserRepository;
@@ -42,6 +43,9 @@ public class NewsViewModel extends ViewModel {
 
     public LiveData<NewsReation> showNewsReation(int news_id)   {
         return newsRepository.showNewsReation(news_id);
+    }
+    public LiveData<SearchResult> search(String q)   {
+        return newsRepository.search(q);
     }
 
 }

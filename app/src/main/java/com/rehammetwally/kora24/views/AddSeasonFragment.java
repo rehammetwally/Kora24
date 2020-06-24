@@ -30,7 +30,9 @@ public class AddSeasonFragment extends Fragment implements View.OnClickListener 
         // Required empty public constructor
     }
 
-
+    public boolean onBackPressed() {
+        return true;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

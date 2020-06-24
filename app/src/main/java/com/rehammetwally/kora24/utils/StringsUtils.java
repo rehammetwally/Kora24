@@ -32,7 +32,7 @@ public class StringsUtils {
         String suffix = "منذ";
 //        if (dataDate != null) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date pasTime = null;
             if (dataDate != null) {
                 pasTime = dateFormat.parse(dataDate);

@@ -29,7 +29,9 @@ import com.rehammetwally.kora24.R;
 import com.rehammetwally.kora24.databinding.CommentItemBinding;
 import com.rehammetwally.kora24.interfaces.ItemClickListener;
 import com.rehammetwally.kora24.models.Comments;
+import com.rehammetwally.kora24.models.CommentsReation;
 import com.rehammetwally.kora24.models.Message;
+import com.rehammetwally.kora24.models.NewsReation;
 import com.rehammetwally.kora24.utils.MyApplication;
 import com.rehammetwally.kora24.utils.StringsUtils;
 import com.rehammetwally.kora24.viewmodels.UserViewModel;
@@ -47,8 +49,12 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
     private static ItemClickListener itemClickListener;
     private Context context;
     private int user_id;
-    private int count = 0;
+    private boolean isLike = false;
+    private boolean isDisLike = false;
+    private boolean isLikeBefore = false;
+    private boolean isDisLikeBefore = false;
     private UserViewModel userViewModel;
+    private ReplaiesAdapter replaiesAdapter;
     List<Comments.Comment.Replies> repliesList = new ArrayList<>();
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -98,9 +104,11 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
         TextView title = dialogView.findViewById(R.id.dialog_title);
         title.setGravity(Gravity.CENTER_HORIZONTAL);
         title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        title.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
         TextView message = dialogView.findViewById(R.id.dialog_message);
         message.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         message.setGravity(Gravity.CENTER_HORIZONTAL);
+        message.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -128,100 +136,138 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                 alertDialog.dismiss();
             }
         });
-//        AlertDialog dialog = new AlertDialog.Builder(this,R.style.RightJustifyTheme)
-//                .setTitle("اضافة تعليق جديد")
-//                .setMessage("عزيزى المستخدم يجب عليك تسجيل الدخول لكى تتمكن من اضافة تعليق")
-//                .setPositiveButton("تسجيل دخول", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-////                        startActivity(new Intent(BaseActivity.this, LoginActivity.class));
-//                    }
-//                }).setNegativeButton("الغاء", null)
-//                .show();
-//        LinearLayout diagLayout = new LinearLayout(this);
-//        diagLayout.setOrientation(LinearLayout.VERTICAL);
-//        TextView title = new TextView(this);
-//        title.setTypeface(ResourcesCompat.getFont(this, R.font.bukra));
-//        WindowManager.LayoutParams params=new WindowManager.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//        title.setGravity(Gravity.CENTER);
-//        title.setPadding(20, 20, 20, 20);
-//        diagLayout.addView(title);
-//        dialog.setView(diagLayout);
-//        dialog.setCustomTitle(title);
-//        TextView textView = dialog.findViewById(android.R.id.message);
-//        Button button1 = dialog.getWindow().findViewById(android.R.id.button1);
-//        Button button2 = dialog.getWindow().findViewById(android.R.id.button2);
-//        textView.setLineSpacing(2f,2f);
-////        title.setTextSize(13f);
-//        textView.setTextSize(13f);
-////        title.setTypeface(ResourcesCompat.getFont(this, R.font.bukra));
-//        textView.setTypeface(ResourcesCompat.getFont(this, R.font.bukra));
-////        button1.setTypeface(ResourcesCompat.getFont(this, R.font.bukra));
-//        button1.setTextColor(getResources().getColor(R.color.colorAccent));
-//        button2.setTextColor(getResources().getColor(R.color.colorAccent));
-//        button2.setTypeface(ResourcesCompat.getFont(this, R.font.bukra));
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
         Comments.Comment comments = getItem(position);
-        Log.e(TAG, "onBindViewHolder: " + comments.name);
         holder.commentItemBinding.setComments(comments);
         holder.commentItemBinding.replaysRv.setHasFixedSize(true);
         holder.commentItemBinding.replaysRv.setLayoutManager(new LinearLayoutManager(context));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.commentItemBinding.replaysRv.getContext(),
-                DividerItemDecoration.VERTICAL);
-        holder.commentItemBinding.replaysRv.addItemDecoration(dividerItemDecoration);
-        ReplaiesAdapter replaiesAdapter = new ReplaiesAdapter();
-//        replaiesAdapter.submitList(comments.replies.get(0));
-        Log.e(TAG, "replies:size " + comments.replies.get(0).size());
-        for (int i = 0; i < comments.replies.get(0).size(); i++) {
-            if (i < 2) {
-                Log.e(TAG, "comments<3: " + comments.replies.get(0).get(i) + " i== " + i);
-                repliesList.add(comments.replies.get(0).get(i));
-            }
-        }
-        replaiesAdapter.submitList(repliesList);
-        holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
-//        Log.e(TAG, "setComments: " + replaiesAdapter.getCurrentList().size());
-        if (comments.replies.get(0).size() >= 2) {
-            holder.commentItemBinding.moreReplaies.setVisibility(View.VISIBLE);
-            holder.commentItemBinding.moreReplaies.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    repliesList = new ArrayList<>();
-                    for (int i = 0; i < comments.replies.get(0).size(); i++) {
-                        repliesList.add(comments.replies.get(0).get(i));
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.commentItemBinding.replaysRv.getContext(),
+//                DividerItemDecoration.VERTICAL);
+//        holder.commentItemBinding.replaysRv.addItemDecoration(dividerItemDecoration);
+        if (comments.replies.size() > 0) {
+            for (int i = 0; i < comments.replies.size(); i++) {
+                if (comments.replies.get(i).size() > 0) {
+                    List<Comments.Comment.Replies> repliesList = new ArrayList<>();
+                    for (int j = 0; j < comments.replies.get(i).size(); j++) {
+                        Log.e(TAG, "replies: " + comments.replies.get(i).get(j).comment);
+                        if (comments.replies.get(i).size() > 2) {
+                            holder.commentItemBinding.moreReplaies.setVisibility(View.VISIBLE);
+                            if (j < 2) {
+                                repliesList.add(comments.replies.get(i).get(j));
+                                replaiesAdapter = new ReplaiesAdapter(context);
+                                replaiesAdapter.submitList(repliesList);
+                                holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+                            }
+
+                        } else {
+                            holder.commentItemBinding.moreReplaies.setVisibility(View.GONE);
+                            replaiesAdapter = new ReplaiesAdapter(context);
+                            replaiesAdapter.submitList(comments.replies.get(i));
+                            holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+                        }
                     }
-                    Log.e(TAG, "onClick: " + repliesList.size());
-                    replaiesAdapter.submitList(repliesList);
-                    holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
                 }
-            });
+            }
+
         }
-        replaiesAdapter.submitList(repliesList);
-//        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
-        holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+        holder.commentItemBinding.moreReplaies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userViewModel.showCommentsOfNews(comments.news_id).observe((LifecycleOwner) context, new Observer<Comments>() {
+                    @Override
+                    public void onChanged(Comments comments) {
+                        List<Comments.Comment.Replies> list = new ArrayList<>();
+                        for (int i = 0; i < comments.comments.get(position).replies.size(); i++) {
+                            list.addAll(comments.comments.get(position).replies.get(i));
+                        }
+                        replaiesAdapter = new ReplaiesAdapter(context);
+                        replaiesAdapter.submitList(list);
+                        replaiesAdapter.notifyDataSetChanged();
+                        holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+                    }
+                });
+            }
+        });
+//        for (int i = 0; i < comments.replies.size(); i++) {
+//            Log.e(TAG, "replays:first " + comments.replies.get(i).size());
+//            for (int j = 0; j < comments.replies.get(i).size(); j++) {
+//                Log.e(TAG, "replays: " + comments.replies.get(i).get(j).name + " ===> " + comments.replies.get(i).get(j).comment);
+//                repliesList.add(comments.replies.get(i).get(j));
+//            }
+//        }
+//        ReplaiesAdapter replaiesAdapter = new ReplaiesAdapter();
+//        replaiesAdapter.submitList(repliesList);
+//        holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+//        Log.e(TAG, "onBindViewHolder: " + repliesList.size());
+//
+//
+//        if (comments.replies.get(0).size() >= 2) {
+//            holder.commentItemBinding.moreReplaies.setVisibility(View.VISIBLE);
+//            holder.commentItemBinding.moreReplaies.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    List<Comments.Comment.Replies> repliesList = new ArrayList<>();
+//                    for (int i = 0; i < comments.replies.get(0).size(); i++) {
+//                        repliesList.add(comments.replies.get(0).get(i));
+//                    }
+//                    Log.e(TAG, "onClick: " + repliesList.size());
+//                    replaiesAdapter.submitList(repliesList);
+//                    holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+//                    replaiesAdapter.notifyDataSetChanged();
+////                    context.startActivity(new Intent(context, NewsDetailsActivity.class));
+//                }
+//            });
+//        }
+//        replaiesAdapter.submitList(repliesList);
+////        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//        holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
         holder.commentItemBinding.thumbsUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                Log.e(TAG, "onClick:thumbsUp " + count);
+                isLikeBefore = true;
                 if (user_id == 0) {
                     showDialog(v);
                     return;
                 }
-                if (count == 1) {
+                if (isDisLikeBefore) {
+                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (s.equals("added successfully")) {
+                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+                                holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+                                    @Override
+                                    public void onChanged(CommentsReation commentsReation) {
+                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(commentsReation.dislikes));
+                                    }
+                                });
+                                isLike = false;
+                            }
+                        }
+                    });
+                }
+                if (!isLike) {
                     userViewModel.setReplayLikeOrDislike(1, user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
                         @Override
                         public void onChanged(String s) {
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(context, R.color.colorAccent);
                                 holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes + 1));
+                                userViewModel.showNewsReation(comments.id).observe((LifecycleOwner) context, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(newsReation.likes));
+                                    }
+                                });
+                                isLike = true;
                             }
                         }
                     });
+                    Log.e(TAG, "onClick:thumbsUp " + isLike);
                 } else {
                     userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
                         @Override
@@ -229,11 +275,13 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
                                 holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                if (comments.likes == 0) {
-                                    holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes));
-                                } else {
-                                    holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes - 1));
-                                }
+                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+                                    @Override
+                                    public void onChanged(CommentsReation commentsReation) {
+                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(commentsReation.likes));
+                                    }
+                                });
+                                isLike = false;
                             }
                         }
                     });
@@ -244,20 +292,49 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
         holder.commentItemBinding.thumbsDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                Log.e(TAG, "onClick:thumbsUp " + count);
+                isDisLikeBefore = true;
+
+                Log.e(TAG, "onClick:thumbsDown " + isLike);
+                Log.e(TAG, "onClick:thumbsDown " + isDisLike);
+                Log.e(TAG, "onClick:thumbsDown " + isLikeBefore);
+                Log.e(TAG, "onClick:thumbsDown " + isDisLikeBefore);
                 if (user_id == 0) {
                     showDialog(v);
                     return;
                 }
-                if (count == 1) {
+                if (isLikeBefore) {
+                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (s.equals("added successfully")) {
+                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+                                holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+                                    @Override
+                                    public void onChanged(CommentsReation commentsReation) {
+                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(commentsReation.likes));
+                                    }
+                                });
+                                isLike = false;
+                            }
+                        }
+                    });
+                }
+                if (!isDisLike) {
                     userViewModel.setReplayLikeOrDislike(2, user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
                         @Override
                         public void onChanged(String s) {
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(context, R.color.colorAccent);
                                 holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes + 1));
+//                                activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num + 1));
+                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+                                    @Override
+                                    public void onChanged(CommentsReation commentsReation) {
+                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(commentsReation.dislikes));
+                                    }
+                                });
+                                isDisLike = true;
                             }
                         }
                     });
@@ -268,11 +345,13 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
                                 holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                if (comments.dislikes == 0) {
-                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
-                                } else {
-                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes - 1));
-                                }
+                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+                                    @Override
+                                    public void onChanged(CommentsReation commentsReation) {
+                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(commentsReation.dislikes));
+                                    }
+                                });
+                                isDisLike = false;
                             }
                         }
                     });
@@ -280,6 +359,181 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                 }
             }
         });
+//        holder.commentItemBinding.thumbsUp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (user_id == 0) {
+//                    showDialog(v);
+//                    return;
+//                }
+//                if (isDisLikeBefore) {
+//                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+//                                holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
+//                                    }
+//                                });
+//                                isLike = false;
+//                            }
+//                        }
+//                    });
+//                }
+//                if (!isLike) {
+//                    userViewModel.setReplayLikeOrDislike(1, user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorAccent);
+//                                holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes));
+//                                    }
+//                                });
+//                                isLike = true;
+//                            }
+//                        }
+//                    });
+//                    Log.e(TAG, "onClick:thumbsUp " + isLike);
+//                } else {
+//                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+//                                holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes));
+//                                    }
+//                                });
+//                                isLike = false;
+//                            }
+//                        }
+//                    });
+//
+//                }
+//
+////                if (user_id == 0) {
+////                    showDialog(v);
+////                    return;
+////                }
+////                if (!isLike) {
+////                    userViewModel.setReplayLikeOrDislike(1, user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+////                        @Override
+////                        public void onChanged(String s) {
+////                            if (s.equals("added successfully")) {
+////                                int tabIconColor = ContextCompat.getColor(context, R.color.colorAccent);
+////                                holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+////                                holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes + 1));
+////                                isLike = true;
+////                            }
+////                        }
+////                    });
+////                } else {
+////                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+////                        @Override
+////                        public void onChanged(String s) {
+////                            if (s.equals("added successfully")) {
+////                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+////                                holder.commentItemBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+////                                if (comments.likes == 0) {
+////                                    holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes));
+////                                } else {
+////                                    holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes - 1));
+////                                }
+////                                isLike = false;
+////                            }
+////                        }
+////                    });
+//
+////                }
+//            }
+//        });
+//        holder.commentItemBinding.thumbsDown.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                count++;
+////                Log.e(TAG, "onClick:thumbsUp " + count);
+//                if (user_id == 0) {
+//                    showDialog(v);
+//                    return;
+//                }
+//                if (isLikeBefore) {
+//                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+//                                holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentLike.setText(StringsUtils.toString(comments.likes));
+//                                    }
+//                                });
+////                                if (comments.dislikes == 0) {
+////                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
+////                                } else {
+////                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes - 1));
+////                                }
+//                                isLike = false;
+//                            }
+//                        }
+//                    });
+//                }
+//                if (!isDisLike) {
+//                    userViewModel.setReplayLikeOrDislike(2, user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorAccent);
+//                                holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
+//                                    }
+//                                });
+////                                holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes + 1));
+//                                isDisLike = true;
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    userViewModel.removeReplayLikeOrDislike(user_id, comments.id).observe((LifecycleOwner) context, new Observer<String>() {
+//                        @Override
+//                        public void onChanged(String s) {
+//                            if (s.equals("added successfully")) {
+//                                int tabIconColor = ContextCompat.getColor(context, R.color.colorGrayDark);
+//                                holder.commentItemBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                                userViewModel.showCommentsReation(comments.id).observe((LifecycleOwner) context, new Observer<CommentsReation>() {
+//                                    @Override
+//                                    public void onChanged(CommentsReation commentsReation) {
+//                                        holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
+//                                    }
+//                                });
+////                                if (comments.dislikes == 0) {
+////                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes));
+////                                } else {
+////                                    holder.commentItemBinding.commentDislike.setText(StringsUtils.toString(comments.dislikes - 1));
+////                                }
+//                                isDisLike = false;
+//                            }
+//                        }
+//                    });
+//
+//                }
+//            }
+//        });
         holder.commentItemBinding.reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -295,7 +549,7 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                     return;
                 }
                 if (comment.isEmpty()) {
-                    MyApplication.showMessageBottom(v, context.getResources().getString(R.string.type_comment) + " " + context.getResources().getString(R.string.error_message_empty));
+                    MyApplication.showMessageBottom(v, context.getResources().getString(R.string.type_reply) + " " + context.getResources().getString(R.string.error_message_empty));
                     return;
                 }
                 Log.e(TAG, "onClick: " + user_id);
@@ -303,15 +557,27 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                 Log.e(TAG, "onClick: " + comments.news_id);
                 Log.e(TAG, "onClick: " + comments.user_id);
 //                Log.e(TAG, "onClick: " + FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
-                userViewModel.addReply(comment, user_id, comments.user_id, comments.news_id).observe((LifecycleOwner) context, new Observer<Message>() {
+                userViewModel.addReply(comment, user_id, comments.id, comments.news_id).observe((LifecycleOwner) context, new Observer<Message>() {
                     @Override
                     public void onChanged(Message message) {
                         if (message.message.equals("Comment added successfully")) {
                             holder.commentItemBinding.commentEditText.setText("");
-                            MyApplication.showMessageBottom(v, context.getResources().getString(R.string.add_comment_success));
-                            notifyDataSetChanged();
-                            replaiesAdapter.submitList(setComments(comments.news_id));
-                            holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+                            MyApplication.showMessage(v, context.getResources().getString(R.string.add_reply_success));
+                            userViewModel.showCommentsOfNews(comments.news_id).observe((LifecycleOwner) context, new Observer<Comments>() {
+                                @Override
+                                public void onChanged(Comments comments) {
+                                    List<Comments.Comment.Replies> list = new ArrayList<>();
+                                    for (int i = 0; i < comments.comments.get(position).replies.size(); i++) {
+                                        list.addAll(comments.comments.get(position).replies.get(i));
+                                    }
+                                    replaiesAdapter = new ReplaiesAdapter(context);
+                                    replaiesAdapter.submitList(list);
+                                    replaiesAdapter.notifyDataSetChanged();
+                                    holder.commentItemBinding.replaysRv.setAdapter(replaiesAdapter);
+                                }
+                            });
+
+
                         }
                     }
                 });
@@ -330,7 +596,9 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
                 if (comments != null) {
                     for (int i = 0; i < comments.comments.size(); i++) {
                         if (comments.comments.get(i).news_id == id) {
-                            repliesList.addAll(comments.comments.get(i).replies.get(0));
+                            for (int j = 0; j < comments.comments.get(i).replies.size(); j++) {
+                                repliesList.addAll(comments.comments.get(i).replies.get(j));
+                            }
                         }
                     }
                 }
@@ -352,6 +620,5 @@ public class CommentsAdapter extends ListAdapter<Comments.Comment, CommentsAdapt
             itemClickListener.onClick(getAdapterPosition(), view);
         }
     }
-
 
 }

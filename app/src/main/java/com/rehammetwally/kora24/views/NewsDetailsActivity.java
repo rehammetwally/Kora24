@@ -6,16 +6,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
@@ -59,18 +59,28 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
     private int user_id;
     private int count = 0;
     private int views = 0;
+    private boolean isLike = false;
+    private boolean isDisLike = false;
+    private boolean isLikeBefore = false;
+    private boolean isDisLikeBefore = false;
     private CommentsAdapter commentsAdapter;
+    int themeSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int themeSelected = MyApplication.getPref().getInt(MainActivity.THEME_SELECTED);
+        themeSelected = MyApplication.getPref().getInt(MainActivity.THEME_SELECTED);
         ColorPrefUtil.changeThemeStyle(this, themeSelected);
         Log.e(TAG, "onCreate: " + themeSelected);
         activityNewsDetailsBinding = DataBindingUtil.setContentView(this, R.layout.activity_news_details);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
+        activityNewsDetailsBinding.commentsList.setHasFixedSize(true);
+        activityNewsDetailsBinding.commentsList.setLayoutManager(new LinearLayoutManager(this));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(activityNewsDetailsBinding.commentsList.getContext(),
+                DividerItemDecoration.VERTICAL);
+        activityNewsDetailsBinding.commentsList.addItemDecoration(dividerItemDecoration);
         setupToolbar();
         setupAppBar();
         user_id = MyApplication.getPref().getInt("USERID");
@@ -107,109 +117,128 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
         });
         Log.e(TAG, "onCreate: " + news.title);
         setComments();
-//        if (news. == 1) {
-//            int tabIconColor = ContextCompat.getColor(this, R.color.colorAccent);
-//            activityItemDetailsBinding.addToFavBtn.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-//        } else {
-//            int tabIconColor = ContextCompat.getColor(this, R.color.colorDarkGray);
-//            activityItemDetailsBinding.addToFavBtn.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-//        }
+
         activityNewsDetailsBinding.fab.setOnClickListener(this);
         activityNewsDetailsBinding.shareNews.setOnClickListener(this);
         activityNewsDetailsBinding.shareNewsLikeLayout.setOnClickListener(this);
+        activityNewsDetailsBinding.showAllComments.setOnClickListener(this);
         activityNewsDetailsBinding.sendComment.setOnClickListener(this);
+//        if (!isDisLikeBefore) {
         activityNewsDetailsBinding.thumbsUp.setOnClickListener(this);
+//        }
+//        if (!isLikeBefore) {
         activityNewsDetailsBinding.thumbsDown.setOnClickListener(this);
+//        }
         activityNewsDetailsBinding.commentEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "commentEditText: " );
+                Log.e(TAG, "commentEditText: ");
                 activityNewsDetailsBinding.commentsList.setMinimumHeight(500);
             }
         });
         activityNewsDetailsBinding.commentEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                switch (actionId){
+                switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                     case EditorInfo.IME_ACTION_NEXT:
                     case EditorInfo.IME_ACTION_PREVIOUS:
-                        Log.e(TAG, "commentEditText: " );
+                        Log.e(TAG, "commentEditText: ");
                         activityNewsDetailsBinding.commentsList.setMinimumHeight(500);
                         return true;
                 }
                 return false;
             }
         });
-        activityNewsDetailsBinding.commentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus){
-
-                    Log.e(TAG, "commentEditText:hasFocus " );
-                    activityNewsDetailsBinding.commentsList.setMinimumHeight(1200);
-//                    activityNewsDetailsBinding.detailsScrollView.scrollTo(0, activityNewsDetailsBinding.detailsScrollView.getBottom());
-                }else {
-
-                    activityNewsDetailsBinding.commentsList.setMinimumHeight(100);
-                    Log.e(TAG, "commentEditText:notFocus " );
-                }
-//                activityNewsDetailsBinding.detailsScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-//        if ()
     }
-//    @Override
-//    public void onSoftKeyboardShown(boolean isShowing) {
-//        // do whatever you need to do here
-//    }
-    private void setComments() {
-        activityNewsDetailsBinding.commentsList.setHasFixedSize(true);
-        activityNewsDetailsBinding.commentsList.setLayoutManager(new LinearLayoutManager(this));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(activityNewsDetailsBinding.commentsList.getContext(),
-                DividerItemDecoration.VERTICAL);
-        activityNewsDetailsBinding.commentsList.addItemDecoration(dividerItemDecoration);
+
+    public void setComments() {
         commentsAdapter = new CommentsAdapter(this);
-        Log.e(TAG, "setComments:news.id " + news.id);
         userViewModel.showCommentsOfNews(news.id).observe(this, new Observer<Comments>() {
             @Override
             public void onChanged(Comments comments) {
-                if (comments != null) {
+                if (comments.message.equals("Returned Successfully")) {
                     if (comments.comments.size() > 0) {
-                        activityNewsDetailsBinding.showAllComments.setVisibility(View.GONE);
-                        commentList = new ArrayList<>();
-                        for (int i = 0; i < comments.comments.size(); i++) {
-                            if (i < 2) {
-                                Log.e(TAG, "comments<3: " + i);
-                                commentList.add(comments.comments.get(i));
-                            }
-                        }
-                        Log.e(TAG, "commentList: " + commentList.size());
-                        commentsAdapter.submitList(commentList);
-                        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
-                        Log.e(TAG, "setComments: " + commentsAdapter.getCurrentList().size());
-                        if (comments.comments.size() >= 4) {
+                        List<Comments.Comment> list = new ArrayList<>();
+                        if (comments.comments.size() > 2) {
                             activityNewsDetailsBinding.showAllComments.setVisibility(View.VISIBLE);
-                            activityNewsDetailsBinding.showAllComments.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    AllCommentsDialogFragment dialog = new AllCommentsDialogFragment();
-                                    Bundle bundle=new Bundle();
-                                    bundle.putInt("NEWS_ID",news.id);
-                                    dialog.setArguments(bundle);
-                                    dialog.show(getSupportFragmentManager(), "Comments");
+                            for (int i = 0; i < comments.comments.size(); i++) {
+                                if (i < 2) {
+                                    list.add(comments.comments.get(i));
                                 }
-                            });
+                            }
+                            commentsAdapter.submitList(list);
+                            activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+                        } else {
+                            activityNewsDetailsBinding.showAllComments.setVisibility(View.GONE);
+                            commentsAdapter.submitList(comments.comments);
+                            activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
                         }
+//                        for (int i = 0; i < comments.comments.size(); i++) {
+//                            if (i < 2) {
+//                                list.addAll(comments.comments);
+//
+//                                commentsAdapter.submitList(list);
+//                                commentsAdapter.notifyDataSetChanged();
+//                                activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                            }else {
+//                                commentsAdapter.submitList(comments.comments);
+//                                commentsAdapter.notifyDataSetChanged();
+//                                activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                            }
+//                        }
+//                        if (i< 2) {
+//                            list.addAll(comments.comments);
+//
+//                            commentsAdapter.submitList(list);
+//                            commentsAdapter.notifyDataSetChanged();
+//                            activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                        }else {
 
-                        commentsAdapter.submitList(commentList);
-                        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                        }
                     }
                 }
             }
         });
-        commentsAdapter.notifyDataSetChanged();
-        Log.e(TAG, "setComments:size " + commentsAdapter.getCurrentList().size());
+//        userViewModel.showCommentsOfNews(news.id).observe(this, new Observer<Comments>() {
+//            @Override
+//            public void onChanged(Comments comments) {
+//                if (comments.message.equals("Returned Successfully")) {
+//                    if (comments.comments.size() > 0) {
+//                        activityNewsDetailsBinding.showAllComments.setVisibility(View.GONE);
+//                        commentList = new ArrayList<>();
+//                        for (int i = 0; i < comments.comments.size(); i++) {
+//                            if (i < 2) {
+//                                Log.e(TAG, "comments<3: " + i);
+//                                commentList.add(comments.comments.get(i));
+//                            }
+//                        }
+//                        Log.e(TAG, "commentList: " + commentList.size());
+//                        commentsAdapter.submitList(commentList);
+//                        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                        Log.e(TAG, "setComments: " + commentsAdapter.getCurrentList().size());
+//                        if (comments.comments.size() >= 4) {
+//                            activityNewsDetailsBinding.showAllComments.setVisibility(View.VISIBLE);
+//                            activityNewsDetailsBinding.showAllComments.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    if (comments.comments.size() > 0) {
+//                                        commentsAdapter.submitList(comments.comments);
+//                                        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                                    }
+////
+//                                }
+//                            });
+//                        }
+//
+//                        commentsAdapter.submitList(commentList);
+//                        activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+//                    }
+//                }
+//            }
+//        });
+//        commentsAdapter.notifyDataSetChanged();
+//        Log.e(TAG, "setComments:size " + commentsAdapter.getCurrentList().size());
     }
 
 
@@ -288,7 +317,8 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
         });
         mDrawerToggle.syncState();
     }
-    boolean isDown=false;
+
+    boolean isDown = false;
 
     @Override
     public void onClick(final View v) {
@@ -302,20 +332,23 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
                             isDown = true;
                             activityNewsDetailsBinding.fab.setImageResource(R.drawable.ic_arrow_up);
                             activityNewsDetailsBinding.detailsScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                        }else {
+                        } else {
                             isDown = false;
 //                            activityNewsDetailsBinding.appBar..fullScroll(ScrollView.FOCUS_DOWN);
                             activityNewsDetailsBinding.fab.setImageResource(R.drawable.ic_arrow_down);
                             activityNewsDetailsBinding.appBar.setExpanded(true);
                             activityNewsDetailsBinding.detailsScrollView.fullScroll(ScrollView.FOCUS_UP);
                         }
-                        Log.e(TAG, "isDown: "+isDown );
+                        Log.e(TAG, "isDown: " + isDown);
                     }
                 });
                 break;
             case R.id.shareNews:
             case R.id.shareNewsLikeLayout:
                 MyApplication.shareApp(this);
+                break;
+            case R.id.show_all_comments:
+                showAllComments();
                 break;
 
             case R.id.send_comment:
@@ -325,7 +358,10 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
                     return;
                 }
                 if (comment.isEmpty()) {
-                    MyApplication.showMessageBottom(v, getResources().getString(R.string.type_comment) + " " + getResources().getString(R.string.error_message_empty));
+                    activityNewsDetailsBinding.appBar.setExpanded(true);
+                    activityNewsDetailsBinding.detailsScrollView.fullScroll(ScrollView.FOCUS_UP);
+
+                    MyApplication.showMessage(v, getResources().getString(R.string.type_comment) + " " + getResources().getString(R.string.error_message_empty));
                     return;
                 }
                 Log.e(TAG, "onClick: " + user_id);
@@ -338,32 +374,57 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
                         if (message.message.equals("Comment added successfully")) {
                             activityNewsDetailsBinding.commentEditText.setText("");
                             MyApplication.showMessageBottom(v, getResources().getString(R.string.add_comment_success));
-                            commentsAdapter.notifyDataSetChanged();
-                            setComments();
+//                            commentsAdapter.notifyDataSetChanged();
+//                            setComments();
+//                            reloadComments();
+                            showAllComments();
                         }
                     }
                 });
 
                 break;
             case R.id.thumbsUp:
-                count = 0;
-                count++;
-                Log.e(TAG, "onClick:thumbsUp " + count);
+                isLikeBefore = true;
                 if (user_id == 0) {
                     showDialog(v);
                     return;
                 }
-                if (count == 1) {
+                if (isDisLikeBefore) {
+                    userViewModel.removeLikeOrDislike(user_id, news.id).observe(this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (s.equals("added successfully")) {
+                                int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
+                                activityNewsDetailsBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(newsReation.dislikes));
+                                    }
+                                });
+                                isLike = false;
+                            }
+                        }
+                    });
+                }
+                if (!isLike) {
                     userViewModel.setLikeOrDislike(1, user_id, news.id).observe(this, new Observer<String>() {
                         @Override
                         public void onChanged(String s) {
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorAccent);
                                 activityNewsDetailsBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                activityNewsDetailsBinding.like.setText(StringsUtils.toString(news.likes_num + 1));
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.like.setText(StringsUtils.toString(newsReation.likes));
+                                    }
+                                });
+                                isLike = true;
                             }
                         }
                     });
+                    Log.e(TAG, "onClick:thumbsUp " + isLike);
                 } else {
                     userViewModel.removeLikeOrDislike(user_id, news.id).observe(this, new Observer<String>() {
                         @Override
@@ -371,33 +432,64 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
                                 activityNewsDetailsBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                if (news.likes_num == 0) {
-                                    activityNewsDetailsBinding.like.setText(StringsUtils.toString(news.likes_num));
-                                } else {
-                                    activityNewsDetailsBinding.like.setText(StringsUtils.toString(news.likes_num - 1));
-                                }
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.like.setText(StringsUtils.toString(newsReation.likes));
+                                    }
+                                });
+                                isLike = false;
                             }
                         }
                     });
 
                 }
+
                 break;
             case R.id.thumbsDown:
-                count = 0;
-                count++;
-                Log.e(TAG, "onClick:thumbsUp " + count);
+                isDisLikeBefore = true;
+
+                Log.e(TAG, "onClick:thumbsDown " + isLike);
+                Log.e(TAG, "onClick:thumbsDown " + isDisLike);
+                Log.e(TAG, "onClick:thumbsDown " + isLikeBefore);
+                Log.e(TAG, "onClick:thumbsDown " + isDisLikeBefore);
                 if (user_id == 0) {
                     showDialog(v);
                     return;
                 }
-                if (count == 1) {
+                if (isLikeBefore) {
+                    userViewModel.removeLikeOrDislike(user_id, news.id).observe(this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (s.equals("added successfully")) {
+                                int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
+                                activityNewsDetailsBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.like.setText(StringsUtils.toString(newsReation.likes));
+                                    }
+                                });
+                                isLike = false;
+                            }
+                        }
+                    });
+                }
+                if (!isDisLike) {
                     userViewModel.setLikeOrDislike(2, user_id, news.id).observe(this, new Observer<String>() {
                         @Override
                         public void onChanged(String s) {
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorAccent);
                                 activityNewsDetailsBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num + 1));
+//                                activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num + 1));
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(newsReation.dislikes));
+                                    }
+                                });
+                                isDisLike = true;
                             }
                         }
                     });
@@ -408,45 +500,137 @@ public class NewsDetailsActivity extends AppCompatActivity implements View.OnCli
                             if (s.equals("added successfully")) {
                                 int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
                                 activityNewsDetailsBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
-                                if (news.dislikes_num == 0) {
-                                    activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num));
-                                } else {
-                                    activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num - 1));
-                                }
+                                userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+                                    @Override
+                                    public void onChanged(NewsReation newsReation) {
+                                        activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(newsReation.dislikes));
+                                    }
+                                });
+                                isDisLike = false;
                             }
                         }
                     });
 
                 }
-//                if (user_id == 0) {
-//                    showDialog(v);
-//                    return;
-//                }
+                break;
+        }
+
+//        if (v.getId() == R.id.thumbsUp) {
+//            isLikeBefore = true;
+//            Log.e(TAG, "onClick:thumbsUp " + isLike);
+//            if (user_id == 0) {
+//                showDialog(v);
+//                return;
+//            }
+//            if (!isLike) {
+//                userViewModel.setLikeOrDislike(1, user_id, news.id).observe(this, new Observer<String>() {
+//                    @Override
+//                    public void onChanged(String s) {
+//                        if (s.equals("added successfully")) {
+//                            int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorAccent);
+//                            activityNewsDetailsBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                            userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+//                                @Override
+//                                public void onChanged(NewsReation newsReation) {
+//                                    activityNewsDetailsBinding.like.setText(StringsUtils.toString(newsReation.likes));
+//                                }
+//                            });
+//                            isLike = true;
+//                        }
+//                    }
+//                });
+//                Log.e(TAG, "onClick:thumbsUp " + isLike);
+//            } else {
+//                userViewModel.removeLikeOrDislike(user_id, news.id).observe(this, new Observer<String>() {
+//                    @Override
+//                    public void onChanged(String s) {
+//                        if (s.equals("added successfully")) {
+//                            int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
+//                            activityNewsDetailsBinding.thumbsUp.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                            userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+//                                @Override
+//                                public void onChanged(NewsReation newsReation) {
+//                                    activityNewsDetailsBinding.like.setText(StringsUtils.toString(newsReation.likes));
+//                                }
+//                            });
+//                            isLike = false;
+//                        }
+//                    }
+//                });
+//
+//            }
+//        } else if (v.getId() == R.id.thumbsDown) {
+//            isDisLikeBefore = true;
+//            Log.e(TAG, "onClick:thumbsUp " + count);
+//            if (user_id == 0) {
+//                showDialog(v);
+//                return;
+//            }
+//            if (!isLike) {
 //                userViewModel.setLikeOrDislike(2, user_id, news.id).observe(this, new Observer<String>() {
 //                    @Override
 //                    public void onChanged(String s) {
 //                        if (s.equals("added successfully")) {
 //                            int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorAccent);
 //                            activityNewsDetailsBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+////                                activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(news.dislikes_num + 1));
+//                            userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+//                                @Override
+//                                public void onChanged(NewsReation newsReation) {
+//                                    activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(newsReation.dislikes));
+//                                }
+//                            });
+//                            isLike = true;
 //                        }
 //                    }
 //                });
-                break;
-        }
+//            } else {
+//                userViewModel.removeLikeOrDislike(user_id, news.id).observe(this, new Observer<String>() {
+//                    @Override
+//                    public void onChanged(String s) {
+//                        if (s.equals("added successfully")) {
+//                            int tabIconColor = ContextCompat.getColor(NewsDetailsActivity.this, R.color.colorGrayDark);
+//                            activityNewsDetailsBinding.thumbsDown.setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+//                            userViewModel.showNewsReation(news.id).observe(NewsDetailsActivity.this, new Observer<NewsReation>() {
+//                                @Override
+//                                public void onChanged(NewsReation newsReation) {
+//                                    activityNewsDetailsBinding.dislike.setText(StringsUtils.toString(newsReation.dislikes));
+//                                }
+//                            });
+//                            isLike = false;
+//                        }
+//                    }
+//                });
+//
+//            }
+//        }
+    }
 
-
+    private void showAllComments() {
+        commentsAdapter = new CommentsAdapter(this);
+        userViewModel.showCommentsOfNews(news.id).observe(this, new Observer<Comments>() {
+            @Override
+            public void onChanged(Comments comments) {
+                commentsAdapter.submitList(comments.comments);
+                commentsAdapter.notifyDataSetChanged();
+                activityNewsDetailsBinding.commentsList.setAdapter(commentsAdapter);
+            }
+        });
     }
 
     public void showDialog(View view) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, themeSelected));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         ViewGroup viewGroup = findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from(view.getContext()).inflate(R.layout.custom_dialog, viewGroup, false);
         TextView title = dialogView.findViewById(R.id.dialog_title);
         title.setGravity(Gravity.CENTER_HORIZONTAL);
         title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         TextView message = dialogView.findViewById(R.id.dialog_message);
         message.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         message.setGravity(Gravity.CENTER_HORIZONTAL);
+        message.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT

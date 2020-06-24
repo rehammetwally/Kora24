@@ -22,65 +22,80 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <Spinner
-                android:layout_centerInParent="true"
-                android:id="@+id/daysSpinner"
+            <!--            <Spinner-->
+            <!--                android:layout_centerInParent="true"-->
+            <!--                android:id="@+id/daysSpinner"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:layout_marginLeft="16dp"-->
+            <!--                android:layout_marginRight="16dp"-->
+            <!--                android:layout_marginBottom="16dp"-->
+            <!--                android:background="@null"-->
+            <!--                android:gravity="center"-->
+            <!--                android:spinnerMode="dialog" />-->
+            <LinearLayout
+                android:id="@+id/daysLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@null"
                 android:gravity="center"
-                android:spinnerMode="dialog" />
-<!--            <LinearLayout-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="vertical"-->
-<!--                android:padding="16dp">-->
+                android:orientation="vertical"
+                android:padding="16dp">
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:gravity="center"-->
-<!--                    android:orientation="horizontal">-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:tint="?android:textColor"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar_" />
 
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/spinner_text"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:layout_marginLeft="8dp"-->
-<!--                        android:layout_marginRight="8dp"-->
-<!--                        android:fontFamily="@font/bukra"-->
-<!--                        android:text="@{game.day()}"-->
-<!--                        android:textColor="#5B6771"-->
-<!--                        android:textSize="14sp" />-->
+                    <TextView
+                        android:id="@+id/day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:fontFamily="@font/bukra"
+                        android:text="@{game.day()}"
+                        android:textSize="14sp"
+                        android:textColor="?android:textColor"/>
+<!--                    android:textColor="#5B6771"-->
 
-<!--                    <ImageView-->
-<!--                        android:layout_width="24dp"-->
-<!--                        android:layout_height="24dp"-->
-<!--                        android:src="@drawable/ic_calendar_" />-->
-<!--                </LinearLayout>-->
+                </LinearLayout>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/date"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="4dp"-->
-<!--                    android:fontFamily="@font/bukra"-->
-<!--                    android:text="@{game.date()}"-->
-<!--                    android:textColor="#CBCFD2"-->
-<!--                    android:textSize="11sp" />-->
-<!--            </LinearLayout>-->
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/bukra"
+                    android:text="@{game.date()}"
+                    android:textSize="11sp"
+                    android:textColor="?android:textColor" />
+<!--                android:textColor="#CBCFD2"-->
+            </LinearLayout>
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/no_matches_today"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/bukra"
+            android:gravity="center"
+            android:text="@string/no_games_today"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fixtures_matches_list"

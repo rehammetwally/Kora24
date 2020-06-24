@@ -63,6 +63,7 @@
                 android:gravity="right"
                 android:lineSpacingExtra="8dp"
                 android:text="@{news.title}"
+                android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
 
 

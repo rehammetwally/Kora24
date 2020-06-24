@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.rehammetwally.kora24.data.APIHelper;
 import com.rehammetwally.kora24.data.Api;
 import com.rehammetwally.kora24.models.Comments;
+import com.rehammetwally.kora24.models.CommentsReation;
 import com.rehammetwally.kora24.models.MatchList;
 import com.rehammetwally.kora24.models.Message;
 import com.rehammetwally.kora24.models.NewsReation;
@@ -183,6 +184,26 @@ public class UserRepository {
         return data;
     }
 
+    public LiveData<CommentsReation> showCommentsReation(int comment_id) {
+        final MutableLiveData<CommentsReation> data = new MutableLiveData<>();
+        Call<CommentsReation> call = service.showCommentsReation(comment_id);
+        call.enqueue(new Callback<CommentsReation>() {
+            @Override
+            public void onResponse(Call<CommentsReation> call, Response<CommentsReation> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+                Log.e(TAG, "onResponse: " + response);
+            }
+
+            @Override
+            public void onFailure(Call<CommentsReation> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+        return data;
+    }
+
     public LiveData<Message> addComment(String comment, int user_id, int news_id) {
         final MutableLiveData<Message> data = new MutableLiveData<>();
         Call<Message> call = service.addComment(comment, user_id, news_id);
@@ -256,7 +277,7 @@ public class UserRepository {
 //                    user.data=null;
 //                    user.message=response.message();
 //                    data.setValue(user);
-                    Log.e(TAG, "onResponse:error " + response.body().message);
+//                    Log.e(TAG, "onResponse:error " + response.body().message);
                 }
                 Log.e(TAG, "onResponse: " + response);
             }
@@ -278,37 +299,64 @@ public class UserRepository {
         final MutableLiveData<User> data = new MutableLiveData<>();
         Log.e(TAG, "register:photo " + photo);
         //pass it like this
-        File file = new File(photo);
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+        if (photo != null) {
+            File file = new File(photo);
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
-        Call<User> call = service.register(name, email, password, body);
-        Log.e(TAG, "register: " + body.body());
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse: " + response.body().data.email);
-                    data.setValue(response.body());
-                } else {
-                    User user = new User();
-                    user.message = response.message();
-                    data.setValue(user);
-                    Log.e(TAG, "onResponse:error " + response.message());
+            Call<User> call = service.register(name, email, password, body);
+            Log.e(TAG, "register: " + body.body());
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG, "onResponse: " + response.body().data.email);
+                        data.setValue(response.body());
+                    } else {
+                        User user = new User();
+                        user.message = response.message();
+                        data.setValue(user);
+                        Log.e(TAG, "onResponse:error " + response.message());
+                    }
+                    Log.e(TAG, "onResponse: " + response);
                 }
-                Log.e(TAG, "onResponse: " + response);
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                User user = new User();
-                user.message = t.getMessage();
-                data.setValue(user);
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    User user = new User();
+                    user.message = t.getMessage();
+                    data.setValue(user);
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+        }else {
+            Call<User> call = service.register(name, email, password);
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        Log.e(TAG, "onResponse: " + response.body().data.email);
+                        data.setValue(response.body());
+                    } else {
+                        User user = new User();
+                        user.message = response.message();
+                        data.setValue(user);
+                        Log.e(TAG, "onResponse:error " + response.message());
+                    }
+                    Log.e(TAG, "onResponse: " + response);
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    User user = new User();
+                    user.message = t.getMessage();
+                    data.setValue(user);
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+        }
         return data;
     }
 

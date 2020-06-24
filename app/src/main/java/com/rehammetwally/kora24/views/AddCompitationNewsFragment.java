@@ -61,7 +61,9 @@ public class AddCompitationNewsFragment extends Fragment implements View.OnClick
     public AddCompitationNewsFragment() {
         // Required empty public constructor
     }
-
+    public boolean onBackPressed() {
+        return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

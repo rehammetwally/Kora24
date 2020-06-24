@@ -31,6 +31,9 @@ public class AllTournamentsFragment extends Fragment {
     public AllTournamentsFragment() {
         // Required empty public constructor
     }
+    public boolean onBackPressed() {
+        return true;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

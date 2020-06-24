@@ -1,5 +1,6 @@
 package com.rehammetwally.kora24.models;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
@@ -37,7 +38,11 @@ public class News implements Serializable {
     public String updated_at;
     @SerializedName("created_at")
     public String created_at;
+    private static final String TAG = "News";
 
+    public String date(){
+        return news_date.split(" ")[0];
+    }
 
     public int getImageResource() {
         if (views < 1000) {//blue
@@ -50,6 +55,8 @@ public class News implements Serializable {
             return R.drawable.less_views;
         }
     }
+
+
 
     //    http://kora24.atwebpages.com/public/Img
     public String icon() {

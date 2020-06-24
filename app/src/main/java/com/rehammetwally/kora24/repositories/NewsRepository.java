@@ -9,6 +9,7 @@ import com.rehammetwally.kora24.data.APIHelper;
 import com.rehammetwally.kora24.data.Api;
 import com.rehammetwally.kora24.models.News;
 import com.rehammetwally.kora24.models.NewsReation;
+import com.rehammetwally.kora24.models.SearchResult;
 
 import java.io.File;
 import java.util.List;
@@ -23,14 +24,14 @@ import retrofit2.Response;
 public class NewsRepository {
     private Api service;
     private static final String TAG = "NewsRepository";
-    
+
     public NewsRepository() {
         if (this.service == null)
             this.service = APIHelper.getApiService();
     }
 
 
-    public LiveData<News> addNews(String title,String content,String date,String photo) {
+    public LiveData<News> addNews(String title, String content, String date, String photo) {
         final MutableLiveData<News> data = new MutableLiveData<>();
         File file = new File(photo);
         RequestBody requestFile =
@@ -38,28 +39,51 @@ public class NewsRepository {
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
-        Call<News> call = service.addNews(title,content,date,body);
+        Call<News> call = service.addNews(title, content, date, body);
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
                 if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse: "+response.body());
+                    Log.e(TAG, "onResponse: " + response.body());
                     data.setValue(response.body());
-                }else {
-                    Log.e(TAG, "onResponse:error "+response.message());
+                } else {
+                    Log.e(TAG, "onResponse:error " + response.message());
                 }
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
             }
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
-                Log.e(TAG, "onFailure: "+t.getMessage() );
+                Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
         return data;
     }
 
-    public LiveData<News> addNewsForCompitation(String title,String content,String date,int competitionId,String photo) {
+    public LiveData<SearchResult> search(String query) {
+        MutableLiveData<SearchResult> data = new MutableLiveData<>();
+        Call<SearchResult> call = service.search(query);
+        call.enqueue(new Callback<SearchResult>() {
+            @Override
+            public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
+                if (response.isSuccessful()) {
+                    Log.e(TAG, "onResponse: " + response.body());
+                    data.setValue(response.body());
+                } else {
+                    Log.e(TAG, "onResponse:error " + response.message());
+                }
+                Log.e(TAG, "onResponse: " + response);
+            }
+
+            @Override
+            public void onFailure(Call<SearchResult> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+        return data;
+    }
+
+    public LiveData<News> addNewsForCompitation(String title, String content, String date, int competitionId, String photo) {
         final MutableLiveData<News> data = new MutableLiveData<>();
         File file = new File(photo);
         RequestBody requestFile =
@@ -67,27 +91,26 @@ public class NewsRepository {
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
-        Call<News> call = service.addNewsForCompitation(title,content,date,competitionId,body);
+        Call<News> call = service.addNewsForCompitation(title, content, date, competitionId, body);
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
                 if (response.isSuccessful()) {
-                    Log.e(TAG, "onResponse: "+response.body());
+                    Log.e(TAG, "onResponse: " + response.body());
                     data.setValue(response.body());
-                }else {
-                    Log.e(TAG, "onResponse:error "+response.message());
+                } else {
+                    Log.e(TAG, "onResponse:error " + response.message());
                 }
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
             }
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
-                Log.e(TAG, "onFailure: "+t.getMessage() );
+                Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
         return data;
     }
-
 
 
     public LiveData<List<News>> showGeneralNews() {
@@ -98,17 +121,17 @@ public class NewsRepository {
             @Override
             public void onResponse(Call<List<News>> call, Response<List<News>> response) {
                 if (response.isSuccessful()) {
-                    Log.e(TAG, "showGeneralNewsonResponse: "+response.body());
+                    Log.e(TAG, "showGeneralNewsonResponse: " + response.body());
                     data.postValue(response.body());
-                }else {
-                    Log.e(TAG, "showGeneralNewsonResponse:error "+response.message());
+                } else {
+                    Log.e(TAG, "showGeneralNewsonResponse:error " + response.message());
                 }
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
             }
 
             @Override
             public void onFailure(Call<List<News>> call, Throwable t) {
-                Log.e(TAG, "showGeneralNewsonFailure: "+t.getMessage() );
+                Log.e(TAG, "showGeneralNewsonFailure: " + t.getMessage());
             }
         });
         return data;
@@ -122,17 +145,17 @@ public class NewsRepository {
             @Override
             public void onResponse(Call<List<News>> call, Response<List<News>> response) {
                 if (response.isSuccessful()) {
-                    Log.e(TAG, "showCompetitionNewsonResponse: "+response.body());
+                    Log.e(TAG, "showCompetitionNewsonResponse: " + response.body());
                     data.setValue(response.body());
-                }else {
-                    Log.e(TAG, "showCompetitionNewsonResponse:error "+response.message());
+                } else {
+                    Log.e(TAG, "showCompetitionNewsonResponse:error " + response.message());
                 }
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
             }
 
             @Override
             public void onFailure(Call<List<News>> call, Throwable t) {
-                Log.e(TAG, "showCompetitionNewsonFailure: "+t.getMessage() );
+                Log.e(TAG, "showCompetitionNewsonFailure: " + t.getMessage());
             }
         });
         return data;
@@ -148,7 +171,7 @@ public class NewsRepository {
                 if (response.isSuccessful()) {
                     data.setValue(response.body());
                 }
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
             }
 
             @Override

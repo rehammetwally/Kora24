@@ -23,10 +23,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdSize;
+//import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 import com.rehammetwally.kora24.R;
 import com.rehammetwally.kora24.adapters.ViewPagerAdapter;
@@ -42,10 +42,18 @@ public class FavoriteFragment extends Fragment {
     private FragmentFavoriteBinding binding;
     ViewPagerAdapter adapter;
     private static final String TAG = "FavoriteFragment";
+
     public FavoriteFragment() {
         // Required empty public constructor
     }
 
+    public boolean onBackPressed() {
+        return true;
+    }
+
+    public boolean onReload() {
+        return true;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +72,25 @@ public class FavoriteFragment extends Fragment {
             p.setMargins(16, 16, 16, 16);
             tab.requestLayout();
         }
+        binding.pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                int pagei = position + 1;
+                Log.e(TAG, "onPageSelected: " + pagei);
+                if (pagei == 1) {
+                    adapter = new ViewPagerAdapter(getFragmentManager());
+                    setupViewPager(binding.pager);
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
 //        if (getActivity().getIntent().getExtras() != null) {
 //            if (getActivity().getIntent().getExtras().getBoolean(FavoriteFragment.EXTRA_FAVORITE)) {
@@ -76,20 +103,31 @@ public class FavoriteFragment extends Fragment {
 //            }
 //        }
 
-        MobileAds.initialize(getContext(),"ca-app-pub-6734139800346657~5107154850");
-
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        binding.adView.loadAd(adRequest);
+//        MobileAds.initialize(getContext(), "ca-app-pub-6734139800346657~5107154850");
+//
+//
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        binding.adView.loadAd(adRequest);
 
 //        AdView adView = new AdView(getContext());
 //        adView.setAdSize(AdSize.BANNER);
 //        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
 
 //        ca-app-pub-6734139800346657/3914612248 release
+
+
         return view;
     }
 
+    public void reloadPager() {
+        Log.e(TAG, "reloadPager: ");
+        ViewGroup parent = (ViewGroup) binding.pager.getParent();
+        if (parent != null) {
+            parent.removeView(binding.pager);
+            binding.pager.getAdapter().notifyDataSetChanged();
+            parent.addView(binding.pager);
+        }
+    }
 
     private void setupViewPager(ViewPager viewPager) {
 //        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());

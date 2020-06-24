@@ -1,5 +1,6 @@
 package com.rehammetwally.kora24.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -95,6 +96,7 @@ public class NewsAdapter extends ListAdapter<News, RecyclerView.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         showNewsDetails(news);
+//                        ((Activity)context).finish();
                     }
                 });
                 newsHeadViewHolder.newsHeadItemBinding.shareHeadNews.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +121,7 @@ public class NewsAdapter extends ListAdapter<News, RecyclerView.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         showNewsDetails(news);
+//                        ((Activity)context).finish();
                     }
                 });
 

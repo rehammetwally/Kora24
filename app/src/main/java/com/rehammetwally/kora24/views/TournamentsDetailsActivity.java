@@ -1,5 +1,6 @@
 package com.rehammetwally.kora24.views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -8,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +22,7 @@ import com.rehammetwally.kora24.utils.MyApplication;
 
 import akndmr.github.io.colorprefutil.ColorPrefUtil;
 
-public class TournamentsDetailsActivity extends AppCompatActivity {
+public class TournamentsDetailsActivity extends AppCompatActivity implements View.OnClickListener {
     private ActivityTournamentsDetailsBinding binding;
     private ActionBarDrawerToggle mDrawerToggle;
     private Tournaments tournaments;
@@ -34,16 +36,17 @@ public class TournamentsDetailsActivity extends AppCompatActivity {
         Log.e(TAG, "onCreate: " + themeSelected);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_tournaments_details);
         tournaments = (Tournaments) getIntent().getExtras().get("TOURNAMENTS");
-        Log.e(TAG, "onCreate: "+tournaments.title );
-        Log.e(TAG, "onCreate:id "+tournaments.id );
+
+        Log.e(TAG, "onCreate: " + tournaments.title);
+        Log.e(TAG, "onCreate:id " + tournaments.id);
         binding.setTournaments(tournaments);
         setupToolbar();
         setupAppBar();
-
+        binding.shareTournaments.setOnClickListener(this);
         setupViewPager(binding.pager);
         binding.tabLayout.setupWithViewPager(binding.pager);
 
-        for(int i=0; i < binding.tabLayout.getTabCount(); i++) {
+        for (int i = 0; i < binding.tabLayout.getTabCount(); i++) {
             View tab = ((ViewGroup) binding.tabLayout.getChildAt(0)).getChildAt(i);
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
             p.setMargins(16, 16, 16, 16);
@@ -51,6 +54,7 @@ public class TournamentsDetailsActivity extends AppCompatActivity {
         }
 
     }
+
     private void setupAppBar() {
         binding.appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
@@ -80,22 +84,31 @@ public class TournamentsDetailsActivity extends AppCompatActivity {
     private void showTitle() {
         binding.toolbarTitle.setVisibility(View.VISIBLE);
         String title = "";
-        if (tournaments.title.length() <= 25) {
-            title = tournaments.title;
+        if (MyApplication.getPref().getString("TOURNAMENTS_TITLE") != null) {
+            binding.toolbarTitle.setText(MyApplication.getPref().getString("TOURNAMENTS_TITLE"));
         } else {
-            title = tournaments.title.substring(0, 25).concat("...");
+            if (tournaments.title.length() <= 25) {
+                title = tournaments.title;
+            } else {
+                title = tournaments.title.substring(0, 25).concat("...");
+            }
+            binding.toolbarTitle.setText(title);
         }
-        binding.toolbarTitle.setText(title);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         Bundle bundle = new Bundle();
-        LastNewsFragment lastNewsFragment=new LastNewsFragment();
-        bundle.putInt("COMPITIONID",tournaments.id);
+        LastNewsFragment lastNewsFragment = new LastNewsFragment();
+        Log.e(TAG, "setupViewPager: " + MyApplication.getPref().getInt("TOURNAMENTS_ID"));
+//        if (MyApplication.getPref().getInt("TOURNAMENTS_ID") !=0){
+//            bundle.putInt("COMPITIONID",MyApplication.getPref().getInt("TOURNAMENTS_ID"));
+//        }else {
+        bundle.putInt("COMPITIONID", tournaments.id);
+//        }
         lastNewsFragment.setArguments(bundle);
-        FixturesTournamentsFragment fixturesTournamentsFragment=new FixturesTournamentsFragment();
-        bundle.putInt("COMPITIONID",tournaments.id);
+        FixturesTournamentsFragment fixturesTournamentsFragment = new FixturesTournamentsFragment();
+        bundle.putInt("COMPITIONID", tournaments.id);
         fixturesTournamentsFragment.setArguments(bundle);
         adapter.addFragment(lastNewsFragment, getResources().getString(R.string.last_news));
         adapter.addFragment(fixturesTournamentsFragment, getResources().getString(R.string.fixtures));
@@ -124,5 +137,23 @@ public class TournamentsDetailsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.share_tournaments:
+                MyApplication.shareApp(this);
+                break;
+        }
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
